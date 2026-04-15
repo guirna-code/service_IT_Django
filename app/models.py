@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+import qrcode
+import os
+from django.conf import settings
 class Utilisateur(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
