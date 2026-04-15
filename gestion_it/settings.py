@@ -76,11 +76,11 @@ WSGI_APPLICATION = 'gestion_it.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_service_it',      # The name you created in pgAdmin
-        'USER': 'postgres',          # Your PostgreSQL username
-        'PASSWORD': 'admin', # Your PostgreSQL password
-        'HOST': '127.0.0.1',         # Your localhost
-        'PORT': '7777',   
+        'NAME': 'db_service_it',
+        'USER': 'admin',
+        'PASSWORD': 'admin',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 AUTH_USER_MODEL = 'app.Utilisateur'
