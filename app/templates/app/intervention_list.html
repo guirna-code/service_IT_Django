@@ -1,0 +1,331 @@
+{% extends 'app/base.html' %}
+{% block title %}Interventions | ServiceIT{% endblock %}
+
+{% block content %}
+<style>
+    .interventions-page {
+        color: var(--lux-text);
+    }
+
+    .interventions-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .interventions-title {
+        margin: 0;
+        font-size: 1.85rem;
+        font-weight: 700;
+        color: var(--lux-text);
+    }
+
+    .interventions-subtitle {
+        margin: 8px 0 0;
+        color: var(--lux-muted);
+        font-size: 0.95rem;
+    }
+
+    .btn-lux-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #8e7dff 0%, #a99cff 100%);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 12px 20px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.25s ease;
+        box-shadow: 0 12px 26px rgba(142, 125, 255, 0.25);
+    }
+
+    .btn-lux-primary:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 14px 30px rgba(142, 125, 255, 0.32);
+    }
+
+    .table-shell {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--lux-border);
+        border-radius: 24px;
+        overflow: hidden;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .table-interventions {
+        margin-bottom: 0;
+        color: var(--lux-text);
+        --bs-table-bg: transparent;
+        --bs-table-color: var(--lux-text);
+        --bs-table-border-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .table-interventions thead th {
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--lux-muted);
+        text-transform: uppercase;
+        letter-spacing: 1.4px;
+        font-size: 0.74rem;
+        font-weight: 600;
+        padding: 18px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        white-space: nowrap;
+    }
+
+    .table-interventions tbody td {
+        padding: 18px 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .table-interventions tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-interventions tbody tr:hover {
+        background: rgba(255, 255, 255, 0.025);
+    }
+
+    .id-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 42px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #dfe3f8;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+
+    .machine-name {
+        font-weight: 600;
+        color: var(--lux-text);
+    }
+
+    .type-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(142, 125, 255, 0.10);
+        color: #ddd8ff;
+        border: 1px solid rgba(142, 125, 255, 0.18);
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .date-text,
+    .tech-text {
+        color: #d9dced;
+        font-size: 0.92rem;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 13px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        border: 1px solid transparent;
+    }
+
+    .status-success {
+        background: rgba(61, 220, 151, 0.12);
+        color: #3ddc97;
+        border-color: rgba(61, 220, 151, 0.20);
+    }
+
+    .status-warning {
+        background: rgba(255, 181, 71, 0.12);
+        color: #ffb547;
+        border-color: rgba(255, 181, 71, 0.20);
+    }
+
+    .status-danger {
+        background: rgba(255, 107, 107, 0.12);
+        color: #ff6b6b;
+        border-color: rgba(255, 107, 107, 0.20);
+    }
+
+    .status-neutral {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--lux-muted);
+        border-color: rgba(255, 255, 255, 0.10);
+    }
+
+    .actions-group {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+
+    .btn-action-edit {
+        background: rgba(142, 125, 255, 0.10);
+        border: 1px solid rgba(142, 125, 255, 0.20);
+        color: #ddd8ff;
+    }
+
+    .btn-action-edit:hover {
+        color: #fff;
+        background: rgba(142, 125, 255, 0.18);
+        transform: translateY(-1px);
+    }
+
+    .btn-action-delete {
+        background: rgba(255, 107, 107, 0.10);
+        border: 1px solid rgba(255, 107, 107, 0.20);
+        color: #ff9e9e;
+    }
+
+    .btn-action-delete:hover {
+        color: #fff;
+        background: rgba(255, 107, 107, 0.18);
+        transform: translateY(-1px);
+    }
+
+    .empty-state {
+        padding: 48px 16px;
+        text-align: center;
+        color: var(--lux-muted);
+    }
+
+    @media (max-width: 768px) {
+        .interventions-title {
+            font-size: 1.45rem;
+        }
+
+        .btn-lux-primary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="interventions-page">
+    <div class="interventions-header">
+        <div>
+            <h1 class="interventions-title">Liste des Interventions</h1>
+            <p class="interventions-subtitle">
+                Historique et gestion des interventions techniques du parc informatique.
+            </p>
+        </div>
+
+        <a href="{% url 'app:intervention_add' %}" class="btn-lux-primary">
+            <i class="bi bi-plus-circle"></i>
+            Ajouter une intervention
+        </a>
+    </div>
+
+    <div class="table-shell">
+        <div class="table-responsive">
+            <table class="table table-interventions align-middle">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Machine</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Technicien</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for intervention in interventions %}
+                    <tr>
+                        <td>
+                            <span class="id-badge">#{{ intervention.id }}</span>
+                        </td>
+
+                        <td>
+                            <span class="machine-name">{{ intervention.machine }}</span>
+                        </td>
+
+                        <td>
+                            <span class="type-pill">{{ intervention.type }}</span>
+                        </td>
+
+                        <td>
+                            <span class="date-text">{{ intervention.date }}</span>
+                        </td>
+
+                        <td>
+                            <span class="tech-text">{{ intervention.technicien }}</span>
+                        </td>
+
+                        <td>
+                            <span class="status-pill
+                                {% if intervention.statut == 'terminée' or intervention.statut == 'terminee' or intervention.statut == 'clôturée' or intervention.statut == 'cloturee' %}
+                                    status-success
+                                {% elif intervention.statut == 'en cours' or intervention.statut == 'maintenance' %}
+                                    status-warning
+                                {% elif intervention.statut == 'annulée' or intervention.statut == 'annulee' or intervention.statut == 'échec' or intervention.statut == 'echec' %}
+                                    status-danger
+                                {% else %}
+                                    status-neutral
+                                {% endif %}
+                            ">
+                                {{ intervention.statut }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="actions-group">
+                                <a
+                                    href="{% url 'app:intervention_edit' intervention.id %}"
+                                    class="btn-action btn-action-edit"
+                                    title="Modifier"
+                                >
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <a
+                                    href="{% url 'app:intervention_delete' intervention.id %}"
+                                    class="btn-action btn-action-delete"
+                                    title="Supprimer"
+                                >
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                Aucune intervention trouvée.
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

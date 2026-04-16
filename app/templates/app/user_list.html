@@ -1,0 +1,332 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Utilisateurs | ServiceIT{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --lux-bg: #0f0f12;
+        --lux-surface: rgba(255, 255, 255, 0.06);
+        --lux-border: rgba(255, 255, 255, 0.10);
+        --lux-text: #f5f7ff;
+        --lux-muted: #a7acc3;
+        --lux-purple: #8e7dff;
+        --lux-gradient: linear-gradient(135deg, #8e7dff 0%, #a99cff 100%);
+    }
+
+    .lux-shell {
+        background: var(--lux-bg);
+        border: 1px solid var(--lux-border);
+        border-radius: 26px;
+        padding: 30px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    }
+
+    .header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .header-flex h1 {
+        color: var(--lux-text);
+        margin-bottom: 6px;
+        font-weight: 700;
+    }
+
+    .header-flex p {
+        color: var(--lux-muted) !important;
+        margin-bottom: 0;
+    }
+
+    .btn-luxury {
+        background: var(--lux-gradient);
+        color: white;
+        border-radius: 50px;
+        padding: 10px 22px;
+        text-decoration: none;
+        font-weight: 600;
+        border: none;
+        transition: all 0.25s ease;
+        box-shadow: 0 12px 28px rgba(142, 125, 255, 0.22);
+    }
+
+    .btn-luxury:hover {
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 16px 30px rgba(142, 125, 255, 0.30);
+    }
+
+    .filter-box {
+        background: var(--lux-surface);
+        border: 1px solid var(--lux-border);
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 25px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .filter-input,
+    .filter-select {
+        background: rgba(255,255,255,0.07) !important;
+        border: 1px solid rgba(255,255,255,0.08) !important;
+        border-radius: 14px !important;
+        color: white !important;
+        padding: 10px 12px !important;
+        box-shadow: none !important;
+    }
+
+    .filter-input::placeholder {
+        color: #9aa0b8;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+        border-color: rgba(142, 125, 255, 0.55) !important;
+        box-shadow: 0 0 0 0.18rem rgba(142, 125, 255, 0.14) !important;
+    }
+
+    .filter-select option {
+        background: #17171d;
+        color: white;
+    }
+
+    .table-wrapper {
+        background: var(--lux-surface);
+        border: 1px solid var(--lux-border);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .table-luxury {
+        color: white;
+        margin-bottom: 0;
+        --bs-table-bg: transparent;
+        --bs-table-color: white;
+        --bs-table-border-color: rgba(255,255,255,0.06);
+    }
+
+    .table-luxury thead th {
+        color: var(--lux-muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1.3px;
+        padding: 16px;
+        background: rgba(255,255,255,0.02);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .table-luxury tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .table-luxury tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-luxury tbody tr:hover {
+        background: rgba(255,255,255,0.02);
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 13px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .status-active {
+        background: rgba(46, 204, 113, 0.15);
+        color: #2ecc71;
+    }
+
+    .status-inactive {
+        background: rgba(255,255,255,0.1);
+        color: var(--lux-muted);
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 15px;
+        border-radius: 50px;
+        border: 1px solid var(--lux-border);
+        text-decoration: none;
+        color: white;
+        transition: all 0.25s ease;
+        background: rgba(255,255,255,0.04);
+    }
+
+    .btn-action:hover {
+        color: white;
+        background: rgba(142, 125, 255, 0.12);
+        border-color: rgba(142, 125, 255, 0.22);
+    }
+
+    .pagination .page-link {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: white;
+        margin: 0 4px;
+        border-radius: 12px !important;
+        box-shadow: none;
+    }
+
+    .pagination .page-item.active .page-link {
+        background: var(--lux-gradient);
+        border-color: transparent;
+        color: white;
+    }
+
+    .pagination .page-link:hover {
+        color: white;
+        background: rgba(142, 125, 255, 0.12);
+    }
+
+    .empty-row {
+        color: var(--lux-muted) !important;
+        padding: 40px 16px !important;
+    }
+
+    @media (max-width: 768px) {
+        .lux-shell {
+            padding: 20px;
+        }
+
+        .btn-luxury {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="lux-shell">
+
+    <div class="header-flex">
+        <div>
+            <h1>Équipe ServiceIT</h1>
+            <p>Gestion des accès et des collaborateurs.</p>
+        </div>
+
+        <a href="{% url 'app:user_add' %}" class="btn-luxury">
+            + Ajouter un utilisateur
+        </a>
+    </div>
+
+    <form method="get" class="filter-box row g-3">
+        <div class="col-md-5">
+            <input
+                type="search"
+                name="q"
+                value="{{ request.GET.q }}"
+                class="form-control filter-input"
+                placeholder="Nom, email ou département"
+            >
+        </div>
+
+        <div class="col-md-3">
+            <select name="role" class="form-select filter-select">
+                <option value="">Tous les rôles</option>
+                <option value="admin" {% if request.GET.role == 'admin' %}selected{% endif %}>Administrateur</option>
+                <option value="technicien" {% if request.GET.role == 'technicien' %}selected{% endif %}>Technicien</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <select name="active" class="form-select filter-select">
+                <option value="">Tous</option>
+                <option value="1" {% if request.GET.active == '1' %}selected{% endif %}>Actifs</option>
+                <option value="0" {% if request.GET.active == '0' %}selected{% endif %}>Inactifs</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-luxury w-100">Filtrer</button>
+        </div>
+    </form>
+
+    <div class="table-wrapper">
+        <div class="table-responsive">
+            <table class="table table-luxury align-middle">
+                <thead>
+                    <tr>
+                        <th>Collaborateur</th>
+                        <th>Email</th>
+                        <th>Rôle</th>
+                        <th>Département</th>
+                        <th>Statut</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.get_full_name|default:user.email }}</td>
+                        <td class="text-muted">{{ user.email }}</td>
+                        <td>{{ user.get_role_display|default:user.role }}</td>
+                        <td>{{ user.department|default:"-" }}</td>
+                        <td>
+                            <span class="status-pill {% if user.is_active %}status-active{% else %}status-inactive{% endif %}">
+                                {% if user.is_active %}Actif{% else %}Inactif{% endif %}
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'app:user_edit' user.id %}" class="btn-action">
+                                Profil
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center empty-row">
+                            Aucun membre d'équipe trouvé.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if page_obj and page_obj.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-end">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}{% if request.GET.active %}&active={{ request.GET.active }}{% endif %}">
+                        Précédent
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}{% if request.GET.active %}&active={{ request.GET.active }}{% endif %}">
+                        {{ num }}
+                    </a>
+                </li>
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}{% if request.GET.active %}&active={{ request.GET.active }}{% endif %}">
+                        Suivant
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,305 @@
+{% with current=request.resolver_match.url_name|default:'' %}
+
+<style>
+  .sidebar {
+    width: 280px;
+    min-height: 100vh;
+    padding: 24px 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.18);
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1030;
+  }
+
+  .brand-section {
+    padding: 10px 10px 22px 10px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .brand-logo-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    background: linear-gradient(135deg, #8e7dff 0%, #a99cff 100%);
+    box-shadow: 0 0 18px rgba(142, 125, 255, 0.8);
+  }
+
+  .sidebar .nav {
+    gap: 8px;
+  }
+
+  .sidebar .nav-link,
+  .offcanvas-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    border-radius: 14px;
+    color: #cfd5ea;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    position: relative;
+  }
+
+  .sidebar .nav-link i,
+  .offcanvas-sidebar .nav-link i {
+    font-size: 1.05rem;
+    min-width: 20px;
+  }
+
+  .sidebar .nav-link:hover,
+  .offcanvas-sidebar .nav-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateX(4px);
+  }
+
+  .sidebar .nav-link.active,
+  .offcanvas-sidebar .nav-link.active {
+    color: #ffffff;
+    background: linear-gradient(
+      135deg,
+      rgba(142, 125, 255, 0.28),
+      rgba(169, 156, 255, 0.18)
+    );
+    border: 1px solid rgba(169, 156, 255, 0.22);
+    box-shadow: 0 10px 25px rgba(142, 125, 255, 0.18);
+  }
+
+  .sidebar .nav-link.active::before,
+  .offcanvas-sidebar .nav-link.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    bottom: 10px;
+    width: 4px;
+    border-radius: 0 6px 6px 0;
+    background: linear-gradient(180deg, #8e7dff 0%, #a99cff 100%);
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .logout-btn {
+    color: #ffb4b4 !important;
+  }
+
+  .logout-btn:hover {
+    background: rgba(255, 107, 107, 0.12) !important;
+    color: #ffffff !important;
+  }
+
+  .offcanvas-sidebar {
+    width: 290px;
+    background:
+      radial-gradient(
+        circle at top left,
+        rgba(142, 125, 255, 0.12),
+        transparent 25%
+      ),
+      #11131a;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    color: white;
+  }
+
+  .offcanvas-sidebar .offcanvas-header {
+    padding: 20px 18px;
+  }
+
+  .offcanvas-sidebar .offcanvas-body {
+    padding: 14px 14px 18px 14px;
+  }
+
+  @media (max-width: 991.98px) {
+    .sidebar {
+      display: none !important;
+    }
+  }
+</style>
+
+<!-- DESKTOP -->
+<aside class="sidebar d-none d-lg-flex flex-column">
+  <div class="brand-section">
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <span class="brand-logo-dot"></span>
+      <h4 class="fw-bold text-white mb-0">ServiceIT</h4>
+    </div>
+    <small class="text-muted">Admin Console</small>
+  </div>
+
+  <nav class="nav flex-column">
+    <a
+      class="nav-link {% if current == 'dashboard' %}active{% endif %}"
+      href="{% url 'app:dashboard' %}"
+    >
+      <i class="bi bi-grid-1x2-fill"></i>
+      <span>Tableau de bord</span>
+    </a>
+
+    <a
+      class="nav-link {% if 'machine' in current %}active{% endif %}"
+      href="{% url 'app:machine_list' %}"
+    >
+      <i class="bi bi-laptop"></i>
+      <span>Machines</span>
+    </a>
+
+    <a
+      class="nav-link {% if 'intervention' in current %}active{% endif %}"
+      href="{% url 'app:intervention_list' %}"
+    >
+      <i class="bi bi-shield-check"></i>
+      <span>Interventions</span>
+    </a>
+
+    <a
+      class="nav-link {% if 'user' in current %}active{% endif %}"
+      href="{% url 'app:user_list' %}"
+    >
+      <i class="bi bi-people"></i>
+      <span>Utilisateurs</span>
+    </a>
+
+    <a
+      class="nav-link {% if 'component' in current %}active{% endif %}"
+      href="{% url 'app:component_list' %}"
+    >
+      <i class="bi bi-cpu"></i>
+      <span>Composants</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a class="nav-link logout-btn" href="{% url 'app:logout' %}">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Déconnexion</span>
+    </a>
+  </div>
+</aside>
+
+<!-- MOBILE -->
+<div
+  class="offcanvas offcanvas-start offcanvas-sidebar"
+  tabindex="-1"
+  id="sidebarCanvas"
+  aria-labelledby="sidebarCanvasLabel"
+>
+  <div class="offcanvas-header border-bottom border-secondary">
+    <div>
+      <h5 class="text-white fw-bold mb-0" id="sidebarCanvasLabel">ServiceIT</h5>
+      <small class="text-muted">Menu Navigation</small>
+    </div>
+    <button
+      type="button"
+      class="btn-close btn-close-white"
+      data-bs-dismiss="offcanvas"
+      aria-label="Fermer"
+    ></button>
+  </div>
+
+  <div class="offcanvas-body d-flex flex-column">
+    <nav class="nav flex-column mb-auto">
+      <a
+        class="nav-link {% if current == 'dashboard' %}active{% endif %}"
+        href="{% url 'app:dashboard' %}"
+      >
+        <i class="bi bi-grid-1x2-fill"></i>
+        <span>Tableau de bord</span>
+      </a>
+
+      <a
+        class="nav-link {% if 'machine' in current %}active{% endif %}"
+        href="{% url 'app:machine_list' %}"
+      >
+        <i class="bi bi-laptop"></i>
+        <span>Machines</span>
+      </a>
+
+      <a
+        class="nav-link {% if 'intervention' in current %}active{% endif %}"
+        href="{% url 'app:intervention_list' %}"
+      >
+        <i class="bi bi-shield-check"></i>
+        <span>Interventions</span>
+      </a>
+
+      <a
+        class="nav-link {% if 'user' in current %}active{% endif %}"
+        href="{% url 'app:user_list' %}"
+      >
+        <i class="bi bi-people"></i>
+        <span>Utilisateurs</span>
+      </a>
+
+      <a
+        class="nav-link {% if 'component' in current %}active{% endif %}"
+        href="{% url 'app:component_list' %}"
+      >
+        <i class="bi bi-cpu"></i>
+        <span>Composants</span>
+      </a>
+    </nav>
+
+    <div class="pt-3 mt-3 border-top border-secondary">
+      <a class="nav-link logout-btn" href="{% url 'app:logout' %}">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Déconnexion</span>
+      </a>
+    </div>
+  </div>
+</div>
+<script>
+  // ===============================
+  // Sidebar UX Enhancements
+  // ===============================
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // Auto-close mobile sidebar after click
+    const links = document.querySelectorAll(".offcanvas-sidebar .nav-link");
+    const sidebar = document.getElementById("sidebarCanvas");
+
+    links.forEach((link) => {
+      link.addEventListener("click", () => {
+        if (sidebar) {
+          let offcanvas = bootstrap.Offcanvas.getInstance(sidebar);
+          if (offcanvas) {
+            offcanvas.hide();
+          }
+        }
+      });
+    });
+
+    // Active link smooth highlight
+    document.querySelectorAll(".nav-link").forEach((link) => {
+      link.addEventListener("mouseenter", () => {
+        link.style.transform = "translateX(6px)";
+      });
+
+      link.addEventListener("mouseleave", () => {
+        link.style.transform = "";
+      });
+    });
+  });
+  // Ripple effect for sidebar links
+  document.querySelectorAll(".nav-link").forEach((link) => {
+    link.addEventListener("click", function (e) {
+      const ripple = document.createElement("span");
+      ripple.classList.add("ripple");
+      this.appendChild(ripple);
+
+      setTimeout(() => ripple.remove(), 500);
+    });
+  });
+</script>
+{% endwith %}

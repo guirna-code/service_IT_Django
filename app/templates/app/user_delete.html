@@ -1,0 +1,190 @@
+{% extends 'app/base.html' %}
+{% block title %}Supprimer Utilisateur | ServiceIT{% endblock %}
+
+{% block content %}
+<style>
+    .delete-user-page {
+        color: var(--lux-text);
+    }
+
+    .delete-shell {
+        max-width: 760px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 107, 107, 0.18);
+        border-radius: 24px;
+        padding: 32px;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+    }
+
+    .danger-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 107, 107, 0.12);
+        color: #ff6b6b;
+        font-size: 1.6rem;
+        margin-bottom: 18px;
+        border: 1px solid rgba(255, 107, 107, 0.18);
+    }
+
+    .delete-title {
+        margin: 0;
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: var(--lux-text);
+    }
+
+    .delete-subtitle {
+        margin: 10px 0 0;
+        color: var(--lux-muted);
+        font-size: 0.96rem;
+        line-height: 1.7;
+    }
+
+    .user-box {
+        margin-top: 22px;
+        padding: 18px 20px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.035);
+        border: 1px solid var(--lux-border);
+    }
+
+    .user-label {
+        color: var(--lux-muted);
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+    }
+
+    .user-value {
+        color: var(--lux-text);
+        font-weight: 600;
+        font-size: 1.02rem;
+    }
+
+    .warning-box {
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: rgba(255, 181, 71, 0.10);
+        color: #ffd89b;
+        border: 1px solid rgba(255, 181, 71, 0.16);
+        font-size: 0.92rem;
+    }
+
+    .delete-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 24px;
+    }
+
+    .btn-delete-confirm {
+        background: linear-gradient(135deg, #ff5d5d 0%, #ff7b7b 100%);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 12px 22px;
+        font-weight: 600;
+        transition: all 0.25s ease;
+    }
+
+    .btn-delete-confirm:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 12px 28px rgba(255, 107, 107, 0.24);
+    }
+
+    .btn-delete-cancel {
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--lux-text);
+        border: 1px solid var(--lux-border);
+        border-radius: 999px;
+        padding: 12px 22px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.25s ease;
+    }
+
+    .btn-delete-cancel:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    @media (max-width: 768px) {
+        .delete-shell {
+            padding: 22px;
+            border-radius: 20px;
+        }
+
+        .delete-title {
+            font-size: 1.4rem;
+        }
+
+        .delete-actions > * {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="delete-user-page">
+    <div class="delete-shell">
+        <div class="danger-icon">
+            <i class="bi bi-trash3"></i>
+        </div>
+
+        <h1 class="delete-title">Supprimer un utilisateur</h1>
+        <p class="delete-subtitle">
+            Êtes-vous sûr de vouloir supprimer cet utilisateur ?
+            Cette action est définitive et ne pourra pas être annulée.
+        </p>
+
+        {% if target_user %}
+        <div class="user-box">
+            <div class="user-label">Utilisateur concerné</div>
+            <div class="user-value">
+                {{ target_user.get_full_name|default:target_user.username }}
+            </div>
+
+            {% if target_user.email %}
+            <div class="mt-2" style="color: var(--lux-muted); font-size: 0.9rem;">
+                Email : {{ target_user.email }}
+            </div>
+            {% endif %}
+
+            {% if target_user.role %}
+            <div class="mt-1" style="color: var(--lux-muted); font-size: 0.9rem;">
+                Rôle : {{ target_user.role }}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="warning-box">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Cette suppression peut affecter les accès, l’historique d’activité et le suivi administratif.
+        </div>
+
+        <form method="post" class="mt-2">
+            {% csrf_token %}
+            <div class="delete-actions">
+                <button type="submit" class="btn btn-delete-confirm">
+                    Supprimer
+                </button>
+
+                <a href="{% url 'app:user_list' %}" class="btn-delete-cancel">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

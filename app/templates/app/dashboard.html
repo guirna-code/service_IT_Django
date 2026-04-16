@@ -1,0 +1,239 @@
+{% extends 'app/base.html' %}
+{% block title %}Tableau de bord | ServiceIT{% endblock %} 
+
+{% block content %}
+<style>
+    :root {
+        --card-bg: #1e1e26;
+        --accent-purple: linear-gradient(135deg, #8e7dff 0%, #a485ff 100%);
+        --accent-green: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        --accent-orange: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        --accent-red: linear-gradient(135deg, #ff4d4d 0%, #ff6b6b 100%);
+        --border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 24px;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(142, 125, 255, 0.3);
+    }
+
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
+
+    /* Table & Section Styles */
+    .dashboard-section {
+        background: var(--card-bg);
+        border-radius: 24px;
+        border: 1px solid var(--border-color);
+        padding: 30px;
+    }
+
+    .luxury-table thead th {
+        color: #a0a0b0;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 1.2px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 15px;
+    }
+
+    .luxury-table tbody td {
+        padding: 18px 0;
+        color: white;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    /* Custom Progress Bars */
+    .progress-custom {
+        background: rgba(255, 255, 255, 0.05);
+        height: 6px;
+        border-radius: 10px;
+    }
+
+    /* Status Pills */
+    .status-pill {
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    .pill-green { background: rgba(46, 204, 113, 0.1); color: #2ecc71; }
+    .pill-orange { background: rgba(243, 156, 18, 0.1); color: #f39c12; }
+    .pill-red { background: rgba(231, 76, 60, 0.1); color: #e74c3c; }
+
+</style>
+
+<div class="row gy-4">
+    <div class="col-12">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-end gap-3 mb-2">
+            <div>
+                <h2 class="h3 fw-bold text-white mb-1">Vue générale</h2>
+                <p class="text-muted small">Synthèse opérationnelle du parc informatique.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'app:machine_add' %}" class="btn btn-sm px-4" style="background: var(--accent-purple); color: white; border-radius: 50px; font-weight: 600;">
+                   + Machine
+                </a>
+                <a href="{% url 'app:intervention_add' %}" class="btn btn-sm px-4" style="border: 1px solid var(--accent-purple); color: #8e7dff; border-radius: 50px; font-weight: 600;">
+                   + Intervention
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(142, 125, 255, 0.1); color: #8e7dff;">
+                <i class="bi bi-laptop"></i>
+            </div>
+            <h3 class="h6 text-muted mb-1">Machines</h3>
+            <div class="d-flex align-items-baseline gap-2">
+                <span class="h2 fw-bold text-white mb-0">{{ total_machines }}</span>
+                <small class="text-success" style="font-size: 0.75rem;"><i class="bi bi-arrow-up"></i> Total</small>
+            </div>
+            <div class="progress progress-custom mt-3">
+                <div class="progress-bar" style="width: 88%; background: var(--accent-purple);"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71;">
+                <i class="bi bi-tools"></i>
+            </div>
+            <h3 class="h6 text-muted mb-1">Interventions</h3>
+            <span class="h2 fw-bold text-white mb-0">{{ total_interventions }}</span>
+            <div class="progress progress-custom mt-3">
+                <div class="progress-bar" style="width: 72%; background: var(--accent-green);"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(243, 156, 18, 0.1); color: #f39c12;">
+                <i class="bi bi-people"></i>
+            </div>
+            <h3 class="h6 text-muted mb-1">Techniciens</h3>
+            <span class="h2 fw-bold text-white mb-0">{{ total_technicians }}</span>
+            <div class="progress progress-custom mt-3">
+                <div class="progress-bar" style="width: 63%; background: var(--accent-orange);"></div>
+            </div>
+        </div>
+    </div>
+
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c;">
+            <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <h3 class="h6 text-muted mb-1">Incidents critiques</h3>
+        <span class="h2 fw-bold text-white mb-0">{{ machines_failed }}</span>
+        <div class="progress progress-custom mt-3">
+            <div class="progress-bar"
+                style="width: {{ machines_failed_percent }}%; background: var(--accent-red);">
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="col-lg-8">
+        <div class="dashboard-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="h5 fw-bold text-white mb-0">Activités Récentes</h3>
+                <a href="{% url 'app:intervention_list' %}" class="btn btn-sm px-3" style="color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 50px; font-size: 0.75rem;">Voir tout</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table luxury-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Machine</th>
+                            <th>Technicien</th>
+                            <th>Durée</th>
+                            <th>Statut</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for intervention in recent_interventions %}
+                        <tr>
+                            <td class="fw-bold">{{ intervention.machine.nom }}</td>
+                            <td class="text-muted small">{{ intervention.redacteur.get_full_name|default:intervention.redacteur.email }}</td>
+                            <td><span class="badge" style="background: rgba(255,255,255,0.05); color: white; border-radius: 6px;">{{ intervention.duree }} min</span></td>
+                            <td>
+                                <span class="status-pill {% if intervention.duree > 120 %}pill-red{% elif intervention.duree > 60 %}pill-orange{% else %}pill-green{% endif %}">
+                                    {{ intervention.status_label }}
+                                </span>
+                            </td>
+                            <td class="text-muted small">{{ intervention.date_cloture|date:'d M Y' }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-center py-5 text-muted">Aucune donnée récente.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="dashboard-section mb-4">
+            <h3 class="h5 fw-bold text-white mb-4">Répartition</h3>
+            <div class="d-flex flex-column gap-3">
+                <div class="d-flex justify-content-between align-items-center p-3" style="background: rgba(255,255,255,0.03); border-radius: 15px;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 10px; height: 10px; border-radius: 50%; background: #2ecc71;"></div>
+                        <span class="small">Opérationnel</span>
+                    </div>
+                    <span class="fw-bold">{{ machines_functional }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center p-3" style="background: rgba(255,255,255,0.03); border-radius: 15px;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 10px; height: 10px; border-radius: 50%; background: #f39c12;"></div>
+                        <span class="small">En Maintenance</span>
+                    </div>
+                    <span class="fw-bold">{{ machines_repair }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center p-3" style="background: rgba(255,255,255,0.03); border-radius: 15px;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 10px; height: 10px; border-radius: 50%; background: #ff4d4d;"></div>
+                        <span class="small">Hors-service</span>
+                    </div>
+                    <span class="fw-bold">{{ machines_failed }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-section">
+            <h3 class="h5 fw-bold text-white mb-3">Raccourcis</h3>
+            <div class="d-grid gap-2">
+                <a href="{% url 'app:machine_add' %}" class="btn py-3 mb-2" style="background: rgba(142, 125, 255, 0.1); color: #8e7dff; border: 1px dashed #8e7dff; border-radius: 15px; font-weight: 600;">
+                    Inventaire Machine
+                </a>
+                <a href="{% url 'app:user_list' %}" class="btn py-3" style="background: rgba(255, 255, 255, 0.03); color: white; border: 1px solid var(--border-color); border-radius: 15px; font-weight: 600;">
+                    Équipe & Accès
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

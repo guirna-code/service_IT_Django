@@ -1,0 +1,112 @@
+{% extends 'app/base.html' %}
+{% block title %}Déconnexion | ServiceIT{% endblock %}
+
+{% block content %}
+<style>
+    .logout-page {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--lux-text);
+    }
+
+    .logout-shell {
+        width: 100%;
+        max-width: 480px;
+        background:
+            radial-gradient(circle at top, rgba(142, 125, 255, 0.15), transparent 30%),
+            rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--lux-border);
+        border-radius: 28px;
+        padding: 34px;
+        text-align: center;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 22px 50px rgba(0, 0, 0, 0.28);
+    }
+
+    .logout-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px;
+        background: rgba(61, 220, 151, 0.12);
+        border: 1px solid rgba(61, 220, 151, 0.2);
+        color: #3ddc97;
+        font-size: 1.6rem;
+    }
+
+    .logout-title {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--lux-text);
+    }
+
+    .logout-subtitle {
+        margin-top: 10px;
+        color: var(--lux-muted);
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    .btn-login-again {
+        margin-top: 24px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #8e7dff 0%, #a99cff 100%);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 12px 22px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        box-shadow: 0 14px 30px rgba(142, 125, 255, 0.25);
+    }
+
+    .btn-login-again:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 18px 34px rgba(142, 125, 255, 0.32);
+    }
+
+    @media (max-width: 576px) {
+        .logout-shell {
+            padding: 22px;
+            border-radius: 22px;
+        }
+
+        .logout-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="logout-page">
+    <div class="logout-shell">
+
+        <div class="logout-icon">
+            <i class="bi bi-check-circle"></i>
+        </div>
+
+        <h1 class="logout-title">Déconnexion réussie</h1>
+
+        <p class="logout-subtitle">
+            Vous avez été déconnecté avec succès.<br>
+            À bientôt sur la plateforme ServiceIT.
+        </p>
+
+        <a href="{% url 'app:login' %}" class="btn-login-again">
+            <i class="bi bi-box-arrow-in-right"></i>
+            Se reconnecter
+        </a>
+
+    </div>
+</div>
+{% endblock %}
