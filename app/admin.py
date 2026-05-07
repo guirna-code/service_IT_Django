@@ -1,30 +1,43 @@
-﻿from django.contrib import admin
+﻿
+from django.contrib import admin
+from .models import Utilisateur, Machine, Composant, RapportIntervention
 
-from .models import Composant, Machine, RapportIntervention, Utilisateur
 
 
+# ---------------- UTILISATEUR ----------------
 @admin.register(Utilisateur)
 class UtilisateurAdmin(admin.ModelAdmin):
-    list_display = ("email", "role", "is_staff", "is_active")
-    search_fields = ("email",)
-    ordering = ("email",)
+    list_display = ('id', 'username', 'role')
+    list_filter = ('role',)   # ❌ enlève departement si erreur
+    search_fields = ('username',)
 
 
+# ---------------- MACHINE ----------------
 @admin.register(Machine)
 class MachineAdmin(admin.ModelAdmin):
-    list_display = ("nom", "numero_serie", "type", "etat", "date_acquisition", "enregistre_par")
-    search_fields = ("nom", "numero_serie")
-    list_filter = ("type", "etat")
-
-
+    list_display = ('id', 'nom', 'numero_serie', 'type', 'etat')
+    list_filter = ('type', 'etat')
+    search_fields = ('nom', 'numero_serie')
+    
+# ---------------- COMPOSANT ----------------
 @admin.register(Composant)
 class ComposantAdmin(admin.ModelAdmin):
-    list_display = ("nom", "type", "capacite", "machine")
-    search_fields = ("nom", "type")
+    list_display = ('id', 'nom', 'type', 'machine')
+    search_fields = ('nom',)
 
 
+# ---------------- RAPPORT ----------------
 @admin.register(RapportIntervention)
 class RapportInterventionAdmin(admin.ModelAdmin):
-    list_display = ("machine_concernee", "redacteur", "date_cloture", "duree")
-    search_fields = ("description",)
-    list_filter = ("date_cloture",)
+    list_display = ('id', 'get_machine', 'get_utilisateur', 'date_cloture', 'duree')
+
+    def get_machine(self, obj):
+        return obj.machine.nom
+    get_machine.admin_order_field = 'machine'
+    get_machine.short_description = 'Machine'
+
+    def get_utilisateur(self, obj):
+        return obj.utilisateur.username
+    get_utilisateur.admin_order_field = 'utilisateur'
+    get_utilisateur.short_description = 'Technicien'
+
