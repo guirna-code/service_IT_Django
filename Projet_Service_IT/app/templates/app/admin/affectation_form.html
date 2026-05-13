@@ -1,0 +1,271 @@
+{% extends 'app/base.html' %} {% block title %}{% if affectation %}Modifier{%
+else %}Nouvelle{% endif %} affectation | ServiceIT{% endblock %} {% block
+content %} {% with role=user.role|default:"technician" %}
+<style>
+  .affectation-form-page {
+    color: var(--lux-text);
+  }
+
+  .form-shell {
+    max-width: 900px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--lux-border);
+    border-radius: 24px;
+    padding: 28px;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+  }
+
+  .form-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .form-subtitle {
+    color: var(--lux-muted);
+    margin-bottom: 24px;
+  }
+
+  .lux-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #f5f7ff;
+  }
+
+  .lux-input,
+  .lux-select,
+  .lux-textarea {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: var(--lux-text) !important;
+    border-radius: 16px !important;
+    padding: 12px 14px !important;
+  }
+
+  .lux-select option {
+    background: #17171d;
+    color: white;
+  }
+
+  .lux-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .lux-input:focus,
+  .lux-select:focus,
+  .lux-textarea:focus {
+    border-color: rgba(142, 125, 255, 0.6) !important;
+    box-shadow: 0 0 0 0.2rem rgba(142, 125, 255, 0.14) !important;
+  }
+
+  .btn-lux-primary {
+    background: linear-gradient(135deg, #8e7dff, #a99cff);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 24px;
+    font-weight: 600;
+  }
+
+  .btn-lux-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--lux-border);
+    color: var(--lux-text);
+    border-radius: 999px;
+    padding: 12px 24px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+</style>
+
+<div class="affectation-form-page">
+  <div class="form-shell">
+    <h1 class="form-title">
+      {% if affectation %}Modifier l'affectation{% else %}Nouvelle affectation{%
+      endif %}
+    </h1>
+    <p class="form-subtitle">
+      {% if affectation %}Modifiez les détails de l'affectation.{% else
+      %}Attribuez une machine à un utilisateur ou département.{% endif %}
+    </p>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label lux-label">Machine *</label>
+          <select
+            name="machine"
+            class="form-select lux-select"
+            required
+            {%
+            if
+            affectation
+            %}disabled{%
+            endif
+            %}
+          >
+            {% if affectation %}
+            <option value="{{ affectation.machine.id }}" selected>
+              {{ affectation.machine.nom }}
+            </option>
+            {% else %}
+            <option value="">Sélectionnez une machine</option>
+            {% for machine in machines %}
+            <option value="{{ machine.id }}">
+              {{ machine.nom }} {% if machine.numero_serie %}({{
+              machine.numero_serie }}){% endif %}
+            </option>
+            {% endfor %} {% endif %}
+          </select>
+          {% if affectation %}
+          <input
+            type="hidden"
+            name="machine"
+            value="{{ affectation.machine.id }}"
+          />
+          {% endif %}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label lux-label">Utilisateur (optionnel)</label>
+          <select name="utilisateur" class="form-select lux-select">
+            <option value="">Non assigné</option>
+            {% for utilisateur in utilisateurs %}
+            <option
+              value="{{ utilisateur.id }}"
+              {%
+              if
+              affectation
+              and
+              affectation.utilisateur
+              and
+              affectation.utilisateur.id=""
+              ="utilisateur.id"
+              %}selected{%
+              endif
+              %}
+            >
+              {{ utilisateur.email }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label lux-label">Pôle *</label>
+          <select name="pole" class="form-select lux-select" required>
+            {% for choice_value, choice_label in pole_choices %}
+            <option
+              value="{{ choice_value }}"
+              {%
+              if
+              affectation
+              and
+              affectation.pole=""
+              ="choice_value"
+              %}selected{%
+              endif
+              %}
+            >
+              {{ choice_label }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label lux-label">Date d'affectation *</label>
+          <input
+            type="date"
+            name="date_affectation"
+            class="form-control lux-input"
+            value="{% if affectation %}{{ affectation.date_affectation|date:'Y-m-d' }}{% endif %}"
+            required
+          />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label lux-label">Date de retour (optionnel)</label>
+          <input
+            type="date"
+            name="date_retour"
+            class="form-control lux-input"
+            value="{% if affectation and affectation.date_retour %}{{ affectation.date_retour|date:'Y-m-d' }}{% endif %}"
+          />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label lux-label">Statut *</label>
+          <select name="statut" class="form-select lux-select" required>
+            <option
+              value="ACTIVE"
+              {%
+              if
+              affectation
+              and
+              affectation.statut=""
+              ="ACTIVE"
+              %}selected{%
+              endif
+              %}
+            >
+              Active
+            </option>
+            <option
+              value="RETURNED"
+              {%
+              if
+              affectation
+              and
+              affectation.statut=""
+              ="RETURNED"
+              %}selected{%
+              endif
+              %}
+            >
+              Retourné
+            </option>
+          </select>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label lux-label">Remarque (optionnel)</label>
+          <textarea
+            name="remarque"
+            class="form-control lux-textarea"
+            rows="3"
+            placeholder="Ajoutez une remarque concernant cette affectation..."
+          >
+{% if affectation %}{{ affectation.remarque }}{% endif %}</textarea
+          >
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-lux-primary">
+          <i
+            class="bi bi-{% if affectation %}pencil{% else %}plus-circle{% endif %} me-1"
+          ></i>
+          {% if affectation %}Modifier{% else %}Créer{% endif %}
+        </button>
+
+        <a href="{% url 'app:affectation_list' %}" class="btn-lux-secondary">
+          Annuler
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endwith %} {% endblock %}

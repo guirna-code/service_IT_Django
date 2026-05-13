@@ -1,0 +1,84 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}ServiceIT{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+
+    <!-- Main Static CSS -->
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+  
+
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body class="{% block body_class %}{% endblock %}">
+    <div class="page-shell">
+      {% include 'app/includes/sidebar.html' %}
+
+      <div class="page-main">
+        {% include 'app/includes/navbar.html' %}
+
+        <main class="content-wrapper">
+          {% if messages %}
+          <div class="mb-4">
+            {% for message in messages %}
+            <div
+              class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show alert-luxury"
+              role="alert"
+            >
+              {{ message }}
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Fermer"
+              ></button>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="content-panel">{% block content %}{% endblock %}</div>
+        </main>
+
+        {% include 'app/includes/footer.html' %}
+      </div>
+    </div>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/sidebar.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+
+    <script>
+      // Smooth alert auto close
+      setTimeout(() => {
+        document.querySelectorAll(".alert").forEach((el) => {
+          el.classList.remove("show");
+        });
+      }, 4000);
+
+      // Click ripple effect
+      document.querySelectorAll(".btn").forEach((btn) => {
+        btn.addEventListener("click", function (e) {
+          const ripple = document.createElement("span");
+          ripple.classList.add("ripple");
+          this.appendChild(ripple);
+
+          setTimeout(() => ripple.remove(), 600);
+        });
+      });
+    </script>
+  </body>
+</html>

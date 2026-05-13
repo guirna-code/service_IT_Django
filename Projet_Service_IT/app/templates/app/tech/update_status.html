@@ -1,0 +1,163 @@
+{% extends 'app/base.html' %}
+{% block title %}Modifier État | ServiceIT{% endblock %}
+
+{% block content %}
+<style>
+  .status-page {
+    color: var(--lux-text);
+  }
+
+  .status-shell {
+    max-width: 700px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--lux-border);
+    border-radius: 24px;
+    padding: 28px;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+  }
+
+  .status-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .status-subtitle {
+    color: var(--lux-muted);
+    margin-bottom: 25px;
+  }
+
+  .machine-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 24px;
+  }
+
+  .machine-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .machine-serial {
+    color: var(--lux-muted);
+    font-size: 0.9rem;
+  }
+
+  .lux-label {
+    color: #e3e7fa;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .lux-select {
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    color: white !important;
+    border-radius: 16px !important;
+    padding: 12px 14px !important;
+  }
+
+  .lux-select option {
+    background: #17171d;
+    color: white;
+  }
+
+  .lux-select:focus {
+    border-color: rgba(142,125,255,0.6) !important;
+    box-shadow: 0 0 0 0.2rem rgba(142,125,255,0.14) !important;
+  }
+
+  .btn-save {
+    background: linear-gradient(135deg, #8e7dff, #a99cff);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 24px;
+    font-weight: 600;
+  }
+
+  .btn-cancel {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--lux-border);
+    color: white;
+    border-radius: 999px;
+    padding: 12px 24px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+</style>
+
+<div class="status-page">
+  <div class="status-shell">
+
+    <h1 class="status-title">Modifier l'état</h1>
+
+    <p class="status-subtitle">
+      Mise à jour du statut opérationnel de la machine.
+    </p>
+
+    <div class="machine-card">
+      <div class="machine-name">
+        {{ machine.nom }}
+      </div>
+
+      <div class="machine-serial">
+        S/N : {{ machine.numero_serie }}
+      </div>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div>
+        <label class="form-label lux-label">
+          Nouvel état
+        </label>
+
+        <select name="etat" class="form-select lux-select">
+
+          <option value="FONCTIONNEL"
+            {% if machine.etat == 'FONCTIONNEL' %}selected{% endif %}>
+            Fonctionnel
+          </option>
+
+          <option value="REPARATION"
+            {% if machine.etat == 'REPARATION' %}selected{% endif %}>
+            Réparation
+          </option>
+
+          <option value="EN_PANNE"
+            {% if machine.etat == 'EN_PANNE' %}selected{% endif %}>
+            En panne
+          </option>
+
+        </select>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn btn-save">
+          <i class="bi bi-check-circle me-1"></i>
+          Enregistrer
+        </button>
+
+        <a href="{% url 'app:machine_list_tech' %}" class="btn-cancel">
+          Annuler
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}

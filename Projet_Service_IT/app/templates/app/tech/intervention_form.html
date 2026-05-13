@@ -1,0 +1,198 @@
+{% extends 'app/base.html' %}
+{% block title %}Nouvelle Intervention | ServiceIT{% endblock %}
+
+{% block content %}
+<style>
+  .intervention-page {
+    color: var(--lux-text);
+  }
+
+  .intervention-shell {
+    max-width: 850px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--lux-border);
+    border-radius: 24px;
+    padding: 30px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+  }
+
+  .intervention-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .intervention-subtitle {
+    color: var(--lux-muted);
+    margin-bottom: 24px;
+  }
+
+  .lux-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #f5f7ff;
+  }
+
+  .lux-input,
+  .lux-select,
+  .lux-textarea {
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    color: white !important;
+    border-radius: 16px !important;
+    padding: 12px 14px !important;
+  }
+
+  .lux-select option {
+    background: #17171d;
+    color: white;
+  }
+
+  .lux-input:focus,
+  .lux-select:focus,
+  .lux-textarea:focus {
+    border-color: rgba(142,125,255,0.6) !important;
+    box-shadow: 0 0 0 0.2rem rgba(142,125,255,0.14) !important;
+  }
+
+  .lux-textarea {
+    min-height: 160px;
+    resize: none;
+  }
+
+  .machine-preview {
+    margin-top: 18px;
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .machine-preview-title {
+    font-weight: 700;
+    color: white;
+    margin-bottom: 6px;
+  }
+
+  .machine-preview-sub {
+    color: var(--lux-muted);
+    font-size: 0.92rem;
+  }
+
+  .btn-lux-primary {
+    background: linear-gradient(135deg, #8e7dff, #a99cff);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 24px;
+    font-weight: 600;
+  }
+
+  .btn-lux-secondary {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--lux-border);
+    color: white;
+    border-radius: 999px;
+    padding: 12px 24px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .intervention-shell {
+      padding: 22px;
+    }
+
+    .intervention-title {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
+<div class="intervention-page">
+  <div class="intervention-shell">
+
+    <h1 class="intervention-title">
+      Nouvelle intervention
+    </h1>
+
+    <p class="intervention-subtitle">
+      Créez un rapport d'intervention technique sur une machine du parc informatique.
+    </p>
+
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="mb-4">
+        <label class="form-label lux-label">
+          Machine concernée
+        </label>
+
+        <select
+          name="machine"
+          class="form-select lux-select"
+          required
+        >
+          <option value="">
+            -- Sélectionner une machine --
+          </option>
+
+          {% for machine in machines %}
+            <option value="{{ machine.id }}">
+              {{ machine.nom }} — {{ machine.numero_serie }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label lux-label">
+          Description de l'intervention
+        </label>
+
+        <textarea
+          name="description"
+          class="form-control lux-textarea"
+          placeholder="Décrivez le problème rencontré, les actions effectuées et les remarques techniques..."
+          required
+        ></textarea>
+      </div>
+
+      <div class="machine-preview">
+        <div class="machine-preview-title">
+          Informations
+        </div>
+
+        <div class="machine-preview-sub">
+          Ce rapport sera associé automatiquement au technicien connecté et enregistré dans l’historique des interventions.
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn btn-lux-primary">
+          <i class="bi bi-check-circle me-1"></i>
+          Enregistrer
+        </button>
+
+        <a
+          href="{% url 'app:dashboard' %}"
+          class="btn-lux-secondary"
+        >
+          Annuler
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

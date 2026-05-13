@@ -1,0 +1,177 @@
+{% with current=request.resolver_match.url_name|default:'' %}
+{% with role=user.role|default:'technician' %}
+
+<!-- DESKTOP SIDEBAR -->
+<aside class="sidebar d-none d-lg-flex flex-column">
+  <div class="brand-section">
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <span class="brand-logo-dot"></span>
+      <h4 class="fw-bold text-white mb-0">ServiceIT</h4>
+    </div>
+
+    <small class="text-muted">
+      {% if role == 'admin' %}
+        Admin Console
+      {% else %}
+        Technicien Console
+      {% endif %}
+    </small>
+
+    <div class="role-badge">
+      <i class="bi bi-person-badge"></i>
+      {% if role == 'admin' %}
+        Administrateur IT
+      {% else %}
+        Technicien
+      {% endif %}
+    </div>
+  </div>
+
+  <nav class="nav flex-column">
+    <a class="nav-link {% if current == 'dashboard' %}active{% endif %}" href="{% url 'app:dashboard' %}">
+      <i class="bi bi-grid-1x2-fill"></i>
+      <span>Tableau de bord</span>
+    </a>
+
+    <div class="sidebar-section-title">Parc Informatique</div>
+
+    <a
+      class="nav-link {% if 'machine' in current %}active{% endif %}"
+      href="{% if role == 'admin' %}{% url 'app:machine_list_admin' %}{% else %}{% url 'app:machine_list_tech' %}{% endif %}"
+    >
+      <i class="bi bi-laptop"></i>
+      <span>Machines</span>
+    </a>
+
+    {% if role == 'admin' %}
+    <a class="nav-link {% if 'technician' in current or 'user' in current %}active{% endif %}" href="{% url 'app:manage_technicians' %}">
+      <i class="bi bi-people"></i>
+      <span>Techniciens</span>
+    </a>
+
+    <a class="nav-link {% if 'affectation' in current %}active{% endif %}" href="{% url 'app:affectation_list' %}">
+      <i class="bi bi-person-check"></i>
+      <span>Affectations</span>
+    </a>
+
+    <a class="nav-link {% if 'component' in current %}active{% endif %}" href="{% url 'app:component_list' %}">
+      <i class="bi bi-cpu"></i>
+      <span>Composants</span>
+    </a>
+
+    <a class="nav-link {% if 'inventory' in current or 'inventaire' in current %}active{% endif %}" href="{% url 'app:inventory_report' %}">
+      <i class="bi bi-clipboard-data"></i>
+      <span>Rapports inventaire</span>
+    </a>
+    {% endif %}
+
+    <div class="sidebar-section-title">Maintenance</div>
+
+ <a class="nav-link {% if request.resolver_match.url_name == 'add_intervention' %}active{% endif %}"
+   href="{% url 'app:add_intervention' %}">
+    <i class="bi bi-tools"></i>
+    <span>Interventions</span>
+</a>
+
+<a class="nav-link {% if request.resolver_match.url_name == 'intervention_list' %}active{% endif %}"
+   href="{% url 'app:intervention_list' %}">
+    <i class="bi bi-file-earmark-text"></i>
+    <span>Rapports intervention</span>
+</a>
+
+  <div class="sidebar-footer">
+    <a class="nav-link logout-btn" href="{% url 'app:logout' %}">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Déconnexion</span>
+    </a>
+  </div>
+</aside>
+
+<!-- MOBILE SIDEBAR -->
+<div class="offcanvas offcanvas-start offcanvas-sidebar" tabindex="-1" id="sidebarCanvas">
+  <div class="offcanvas-header border-bottom border-secondary">
+    <div>
+      <h5 class="text-white fw-bold mb-0">ServiceIT</h5>
+      <small class="text-muted">
+        {% if role == 'admin' %}Admin Console{% else %}Technicien Console{% endif %}
+      </small>
+    </div>
+
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
+  </div>
+
+  <div class="offcanvas-body d-flex flex-column">
+    <nav class="nav flex-column mb-auto">
+      <a class="nav-link {% if current == 'dashboard' %}active{% endif %}" href="{% url 'app:dashboard' %}">
+        <i class="bi bi-grid-1x2-fill"></i>
+        <span>Tableau de bord</span>
+      </a>
+
+      <a
+        class="nav-link {% if 'machine' in current %}active{% endif %}"
+        href="{% if role == 'admin' %}{% url 'app:machine_list_admin' %}{% else %}{% url 'app:machine_list_tech' %}{% endif %}"
+      >
+        <i class="bi bi-laptop"></i>
+        <span>Machines</span>
+      </a>
+
+      {% if role == 'admin' %}
+      <a class="nav-link {% if 'technician' in current or 'user' in current %}active{% endif %}" href="{% url 'app:manage_technicians' %}">
+        <i class="bi bi-people"></i>
+        <span>Techniciens</span>
+      </a>
+
+      <a class="nav-link {% if 'affectation' in current %}active{% endif %}" href="{% url 'app:affectation_list' %}">
+        <i class="bi bi-person-check"></i>
+        <span>Affectations</span>
+      </a>
+
+      <a class="nav-link {% if 'component' in current %}active{% endif %}" href="{% url 'app:component_list' %}">
+        <i class="bi bi-cpu"></i>
+        <span>Composants</span>
+      </a>
+
+      <a class="nav-link {% if 'inventory' in current or 'inventaire' in current %}active{% endif %}" href="{% url 'app:inventory_report' %}">
+        <i class="bi bi-clipboard-data"></i>
+        <span>Rapports inventaire</span>
+      </a>
+      {% endif %}
+
+      <a class="nav-link {% if 'intervention' in current %}active{% endif %}" href="{% url 'app:add_intervention' %}">
+        <i class="bi bi-tools"></i>
+        <span>Interventions</span>
+      </a>
+
+      <a class="nav-link {% if 'rapport' in current %}active{% endif %}" href="{% url 'app:intervention_list' %}">
+        <i class="bi bi-file-earmark-text"></i>
+        <span>Rapports intervention</span>
+      </a>
+    </nav>
+
+    <div class="pt-3 mt-3 border-top border-secondary">
+      <a class="nav-link logout-btn" href="{% url 'app:logout' %}">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Déconnexion</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const links = document.querySelectorAll(".offcanvas-sidebar .nav-link");
+    const sidebar = document.getElementById("sidebarCanvas");
+
+    links.forEach((link) => {
+      link.addEventListener("click", () => {
+        if (sidebar && typeof bootstrap !== "undefined") {
+          const offcanvas = bootstrap.Offcanvas.getInstance(sidebar);
+          if (offcanvas) offcanvas.hide();
+        }
+      });
+    });
+  });
+</script>
+
+{% endwith %}
+{% endwith %}
