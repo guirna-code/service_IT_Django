@@ -1,0 +1,43 @@
+{% extends 'app/base.html' %}
+{% block title %}{{ page_title }} | ServiceIT{% endblock %}
+
+{% block content %}
+<div class="dashboard-section">
+  <h1 class="h3 fw-bold text-white mb-4">{{ page_title }}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label class="form-label text-white">Nom</label>
+      <input type="text" name="nom" class="form-control" value="{{ component.nom|default:'' }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label text-white">Type</label>
+      <input type="text" name="type" class="form-control" value="{{ component.type|default:'' }}" placeholder="RAM, SSD, CPU...">
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label text-white">Machine</label>
+      <select name="machine" class="form-select" required>
+        <option value="">Sélectionner une machine</option>
+        {% for machine in machines %}
+          <option value="{{ machine.id }}"
+            {% if component and component.machine.id == machine.id %}selected{% endif %}>
+            {{ machine.nom }} - {{ machine.numero_serie|default:"Sans série" }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary rounded-pill px-4">
+      Enregistrer
+    </button>
+
+    <a href="{% url 'app:component_list' %}" class="btn btn-outline-light rounded-pill px-4">
+      Annuler
+    </a>
+  </form>
+</div>
+{% endblock %}

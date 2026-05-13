@@ -1,0 +1,212 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}ServiceIT{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+
+    <!-- Main Static CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+    <style>
+      :root {
+        --lux-bg: #0f0f12;
+        --lux-bg-secondary: #17171d;
+        --lux-surface: rgba(255, 255, 255, 0.05);
+        --lux-surface-strong: rgba(255, 255, 255, 0.08);
+        --lux-border: rgba(255, 255, 255, 0.1);
+        --lux-text: #f5f7ff;
+        --lux-muted: #a7acc3;
+        --lux-purple: #8e7dff;
+        --lux-purple-light: #a99cff;
+        --lux-gradient: linear-gradient(135deg, #8e7dff 0%, #a99cff 100%);
+        --lux-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      }
+
+      body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(142, 125, 255, 0.12), transparent 25%),
+          radial-gradient(circle at bottom right, rgba(169, 156, 255, 0.08), transparent 20%),
+          var(--lux-bg);
+        color: var(--lux-text);
+        overflow-x: clip;
+      }
+
+      .page-shell {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .page-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin-left: 280px;
+        min-height: 100vh;
+      }
+
+      .content-wrapper {
+        flex: 1;
+        padding: 24px;
+      }
+
+      .content-panel {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--lux-border);
+        border-radius: 24px;
+        backdrop-filter: blur(18px);
+        box-shadow: var(--lux-shadow);
+        padding: 24px;
+        animation: fadeSlide 0.5s ease;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .offcanvas {
+  background: var(--lux-bg-secondary) !important;
+  color: white;
+}
+
+table {
+  color: white !important;
+}
+
+a {
+  text-decoration: none;
+}
+
+      .btn {
+        border-radius: 12px;
+        transition: all 0.25s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .form-control,
+      .form-select {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--lux-border);
+        color: white;
+        border-radius: 12px;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--lux-purple);
+        box-shadow: 0 0 0 0.2rem rgba(142, 125, 255, 0.25);
+        background: rgba(255, 255, 255, 0.07);
+        color: white;
+      }
+
+      .form-control::placeholder {
+        color: var(--lux-muted);
+      }
+
+      .alert {
+        animation: fadeSlide 0.4s ease;
+        border-radius: 14px;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--lux-purple);
+        border-radius: 10px;
+      }
+
+      @media (max-width: 992px) {
+        .page-main {
+          margin-left: 0;
+        }
+
+        .content-wrapper {
+          padding: 16px;
+        }
+      }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+  </head>
+
+  <body class="{% block body_class %}{% endblock %}">
+    <div class="page-shell">
+      {% include 'app/includes/sidebar.html' %}
+
+      <div class="page-main">
+        {% include 'app/includes/navbar.html' %}
+
+        <main class="content-wrapper">
+          {% if messages %}
+            <div class="mb-4">
+              {% for message in messages %}
+                <div
+                  class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show"
+                  role="alert"
+                >
+                  {{ message }}
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Fermer"
+                  ></button>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <div class="content-panel">
+            {% block content %}{% endblock %}
+          </div>
+        </main>
+
+        {% if 'app/includes/footer.html' %}
+        {% include 'app/includes/footer.html' %}
+        {% endif %}
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/sidebar.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+
+    <script>
+      setTimeout(() => {
+        document.querySelectorAll(".alert").forEach((el) => {
+          el.classList.remove("show");
+        });
+      }, 4000);
+    </script>
+  </body>
+</html>

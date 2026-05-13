@@ -1,0 +1,166 @@
+{% extends 'app/base.html' %}
+{% block title %}Connexion | ServiceIT{% endblock %}
+
+{% block content %}
+<style>
+    .login-page {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--lux-text);
+    }
+
+    .login-shell {
+        width: 100%;
+        max-width: 460px;
+        background:
+            radial-gradient(circle at top right, rgba(142, 125, 255, 0.14), transparent 30%),
+            rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--lux-border);
+        border-radius: 28px;
+        padding: 32px;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 22px 50px rgba(0, 0, 0, 0.28);
+    }
+
+    .login-badge {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(142, 125, 255, 0.12);
+        border: 1px solid rgba(142, 125, 255, 0.18);
+        color: #cfc8ff;
+        font-size: 1.4rem;
+        margin-bottom: 18px;
+    }
+
+    .login-title {
+        margin: 0;
+        font-size: 1.85rem;
+        font-weight: 700;
+        color: var(--lux-text);
+    }
+
+    .login-subtitle {
+        margin: 10px 0 0;
+        color: var(--lux-muted);
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    .lux-label {
+        color: #e3e7fa;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .lux-input {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        color: var(--lux-text) !important;
+        border-radius: 16px !important;
+        padding: 12px 14px !important;
+        box-shadow: none !important;
+    }
+
+    .lux-input::placeholder {
+        color: #8d93ab;
+    }
+
+    .lux-input:focus {
+        border-color: rgba(142, 125, 255, 0.65) !important;
+        box-shadow: 0 0 0 0.2rem rgba(142, 125, 255, 0.14) !important;
+    }
+
+    .btn-login {
+        width: 100%;
+        background: linear-gradient(135deg, #8e7dff 0%, #a99cff 100%);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 13px 18px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        transition: all 0.25s ease;
+        box-shadow: 0 14px 30px rgba(142, 125, 255, 0.25);
+    }
+
+    .btn-login:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 18px 34px rgba(142, 125, 255, 0.32);
+    }
+
+    .login-footer-note {
+        margin-top: 18px;
+        text-align: center;
+        color: var(--lux-muted);
+        font-size: 0.86rem;
+    }
+
+    @media (max-width: 576px) {
+        .login-shell {
+            padding: 22px;
+            border-radius: 22px;
+        }
+
+        .login-title {
+            font-size: 1.55rem;
+        }
+    }
+</style>
+
+<div class="login-page">
+    <div class="login-shell">
+        <div class="login-badge">
+            <i class="bi bi-shield-lock"></i>
+        </div>
+
+        <h1 class="login-title">Connexion</h1>
+        <p class="login-subtitle">
+            Accédez à votre espace ServiceIT pour gérer les machines, les utilisateurs et les interventions.
+        </p>
+
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="username" class="form-label lux-label">Nom d'utilisateur</label>
+                <input
+                    type="text"
+                    class="form-control lux-input"
+                    id="username"
+                    name="username"
+                    placeholder="Entrez votre nom d'utilisateur"
+                    required
+                />
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="form-label lux-label">Mot de passe</label>
+                <input
+                    type="password"
+                    class="form-control lux-input"
+                    id="password"
+                    name="password"
+                    placeholder="Entrez votre mot de passe"
+                    required
+                />
+            </div>
+
+            <button type="submit" class="btn btn-login">
+                Se connecter
+            </button>
+        </form>
+
+        <div class="login-footer-note">
+            Plateforme sécurisée pour l’administration et le support technique.
+        </div>
+    </div>
+</div>
+{% endblock %}

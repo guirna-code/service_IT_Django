@@ -1,0 +1,25 @@
+{% extends 'app/base.html' %}
+{% block title %}Supprimer composant | ServiceIT{% endblock %}
+
+{% block content %}
+<div class="dashboard-section">
+  <h1 class="h3 fw-bold text-white mb-3">Supprimer composant</h1>
+
+  <p class="text-muted">
+    Voulez-vous vraiment supprimer le composant
+    <strong class="text-white">{{ component.nom }}</strong> ?
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <button type="submit" class="btn btn-danger rounded-pill px-4">
+      Oui, supprimer
+    </button>
+
+    <a href="{% url 'app:component_list' %}" class="btn btn-outline-light rounded-pill px-4">
+      Annuler
+    </a>
+  </form>
+</div>
+{% endblock %}
