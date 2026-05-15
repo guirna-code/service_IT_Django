@@ -1,0 +1,454 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Machines | ServiceIT{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --lux-bg: #0f0f12;
+        --lux-surface: rgba(255, 255, 255, 0.06);
+        --lux-surface-strong: rgba(255, 255, 255, 0.09);
+        --lux-border: rgba(255, 255, 255, 0.10);
+        --lux-text: #f5f7ff;
+        --lux-muted: #a7acc3;
+        --lux-purple: #8e7dff;
+        --lux-purple-2: #a99cff;
+        --lux-success: #3ddc97;
+        --lux-warning: #ffb547;
+        --lux-danger: #ff6b6b;
+        --lux-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+        --lux-gradient: linear-gradient(135deg, #8e7dff 0%, #a99cff 100%);
+        --lux-glass: blur(18px);
+    }
+
+    .machines-luxury-page {
+        color: var(--lux-text);
+    }
+
+    .machines-shell {
+        background:
+            radial-gradient(circle at top left, rgba(142, 125, 255, 0.16), transparent 28%),
+            radial-gradient(circle at bottom right, rgba(169, 156, 255, 0.10), transparent 24%),
+            var(--lux-bg);
+        border: 1px solid var(--lux-border);
+        border-radius: 28px;
+        padding: 32px;
+        box-shadow: var(--lux-shadow);
+        backdrop-filter: var(--lux-glass);
+        -webkit-backdrop-filter: var(--lux-glass);
+    }
+
+    .machines-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+    }
+
+    .machines-title {
+        margin: 0;
+        font-size: 1.9rem;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        color: var(--lux-text);
+    }
+
+    .machines-subtitle {
+        margin: 8px 0 0;
+        color: var(--lux-muted);
+        font-size: 0.95rem;
+    }
+
+    .btn-luxury-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: var(--lux-gradient);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 12px 22px;
+        text-decoration: none;
+        font-weight: 600;
+        box-shadow: 0 12px 28px rgba(142, 125, 255, 0.28);
+        transition: all 0.25s ease;
+    }
+
+    .btn-luxury-primary:hover {
+        transform: translateY(-2px);
+        color: #fff;
+        box-shadow: 0 16px 32px rgba(142, 125, 255, 0.34);
+    }
+
+    .filter-glass {
+        background: var(--lux-surface);
+        border: 1px solid var(--lux-border);
+        border-radius: 24px;
+        padding: 22px;
+        margin-bottom: 26px;
+        backdrop-filter: var(--lux-glass);
+        -webkit-backdrop-filter: var(--lux-glass);
+    }
+
+    .filter-label {
+        display: inline-block;
+        margin: 0 0 8px 10px;
+        font-size: 0.82rem;
+        color: var(--lux-muted);
+    }
+
+    .filter-input,
+    .filter-select {
+        background: rgba(255, 255, 255, 0.07) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 16px !important;
+        color: var(--lux-text) !important;
+        padding: 12px 16px !important;
+        box-shadow: none !important;
+    }
+
+    .filter-input::placeholder {
+        color: #8e93aa;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+        border-color: rgba(142, 125, 255, 0.7) !important;
+        box-shadow: 0 0 0 0.18rem rgba(142, 125, 255, 0.16) !important;
+    }
+
+    .filter-select option {
+        background-color: #17171d;
+        color: var(--lux-text);
+    }
+
+    .btn-filter {
+        width: 100%;
+        border: 1px solid rgba(142, 125, 255, 0.55);
+        background: rgba(142, 125, 255, 0.10);
+        color: #d7d1ff;
+        border-radius: 16px;
+        font-weight: 600;
+        padding: 12px 18px;
+        transition: all 0.25s ease;
+    }
+
+    .btn-filter:hover {
+        background: var(--lux-gradient);
+        color: #fff;
+        border-color: transparent;
+    }
+
+    .table-card {
+        background: var(--lux-surface);
+        border: 1px solid var(--lux-border);
+        border-radius: 24px;
+        overflow: hidden;
+        backdrop-filter: var(--lux-glass);
+        -webkit-backdrop-filter: var(--lux-glass);
+    }
+
+    .table-luxury {
+        margin-bottom: 0;
+        color: var(--lux-text);
+        --bs-table-bg: transparent;
+        --bs-table-color: var(--lux-text);
+        --bs-table-border-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .table-luxury thead th {
+        padding: 18px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--lux-muted);
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 1.6px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .table-luxury tbody td {
+        padding: 18px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        vertical-align: middle;
+    }
+
+    .table-luxury tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-luxury tbody tr:hover {
+        background: rgba(255, 255, 255, 0.025);
+    }
+
+    .machine-name {
+        font-weight: 600;
+        color: var(--lux-text);
+    }
+
+    .serial-text {
+        color: var(--lux-muted);
+        font-family: "Consolas", "Courier New", monospace;
+        font-size: 0.9rem;
+    }
+
+    .type-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #e8e5ff;
+        font-size: 0.78rem;
+        font-weight: 500;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        border: 1px solid transparent;
+    }
+
+    .status-green {
+        background: rgba(61, 220, 151, 0.12);
+        color: var(--lux-success);
+        border-color: rgba(61, 220, 151, 0.22);
+    }
+
+    .status-orange {
+        background: rgba(255, 181, 71, 0.12);
+        color: var(--lux-warning);
+        border-color: rgba(255, 181, 71, 0.22);
+    }
+
+    .status-red {
+        background: rgba(255, 107, 107, 0.12);
+        color: var(--lux-danger);
+        border-color: rgba(255, 107, 107, 0.22);
+    }
+
+    .technician-text {
+        color: #d8dbeb;
+        font-size: 0.9rem;
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 16px;
+        border-radius: 999px;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #f5f7ff;
+        font-size: 0.82rem;
+        font-weight: 500;
+        transition: all 0.25s ease;
+    }
+
+    .btn-action:hover {
+        background: rgba(142, 125, 255, 0.14);
+        border-color: rgba(142, 125, 255, 0.30);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .empty-state {
+        padding: 48px 16px;
+        text-align: center;
+        color: var(--lux-muted);
+    }
+
+    .pagination-luxury .page-link {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--lux-text);
+        margin: 0 4px;
+        border-radius: 14px !important;
+        padding: 10px 14px;
+        box-shadow: none;
+    }
+
+    .pagination-luxury .page-item.active .page-link {
+        background: var(--lux-gradient);
+        border-color: transparent;
+        color: #fff;
+    }
+
+    .pagination-luxury .page-link:hover {
+        background: rgba(142, 125, 255, 0.12);
+        color: #fff;
+    }
+
+    @media (max-width: 768px) {
+        .machines-shell {
+            padding: 20px;
+            border-radius: 22px;
+        }
+
+        .machines-title {
+            font-size: 1.5rem;
+        }
+
+        .machines-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-luxury-primary {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="machines-luxury-page">
+    <div class="machines-shell">
+        <div class="machines-header">
+            <div>
+                <h1 class="machines-title">Parc des machines</h1>
+                <p class="machines-subtitle">Inventaire global et monitoring des actifs.</p>
+            </div>
+
+            <a href="{% url 'app:machine_add' %}" class="btn-luxury-primary">
+                + Ajouter une machine
+            </a>
+        </div>
+
+        <form method="get" class="filter-glass row gx-3 gy-3 align-items-end">
+            <div class="col-md-4">
+                <label class="filter-label">Recherche</label>
+                <input
+                    type="search"
+                    name="q"
+                    value="{{ request.GET.q }}"
+                    class="form-control filter-input"
+                    placeholder="Nom ou S/N"
+                >
+            </div>
+
+            <div class="col-md-3">
+                <label class="filter-label">Type</label>
+                <select name="type" class="form-select filter-select">
+                    <option value="">Tous les types</option>
+                    <option value="PC" {% if request.GET.type == 'PC' %}selected{% endif %}>PC</option>
+                    <option value="SERVEUR" {% if request.GET.type == 'SERVEUR' %}selected{% endif %}>Serveur</option>
+                    <option value="IMPRIMANTE" {% if request.GET.type == 'IMPRIMANTE' %}selected{% endif %}>Imprimante</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="filter-label">Statut</label>
+                <select name="etat" class="form-select filter-select">
+                    <option value="">Tous les statuts</option>
+                    <option value="FONCTIONNEL" {% if request.GET.etat == 'FONCTIONNEL' %}selected{% endif %}>Fonctionnel</option>
+                    <option value="EN_PANNE" {% if request.GET.etat == 'EN_PANNE' %}selected{% endif %}>En panne</option>
+                    <option value="REPARATION" {% if request.GET.etat == 'REPARATION' %}selected{% endif %}>En réparation</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-filter">Filtrer</button>
+            </div>
+        </form>
+
+        <div class="table-card">
+            <div class="table-responsive">
+                <table class="table table-luxury align-middle">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Série</th>
+                            <th>Type</th>
+                            <th>Statut</th>
+                            <th>Technicien</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for machine in machines %}
+                        <tr>
+                            <td>
+                                <span class="machine-name">{{ machine.nom }}</span>
+                            </td>
+
+                            <td>
+                                <span class="serial-text">{{ machine.numero_serie }}</span>
+                            </td>
+
+                            <td>
+                                <span class="type-badge">{{ machine.type }}</span>
+                            </td>
+
+                            <td>
+                                <span class="status-pill {% if machine.etat == 'FONCTIONNEL' %}status-green{% elif machine.etat == 'REPARATION' %}status-orange{% else %}status-red{% endif %}">
+                                    {{ machine.get_etat_display|default:machine.etat }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="technician-text">
+                                    {{ machine.enregistre_par.get_full_name|default:machine.enregistre_par.email }}
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+                                <a href="{% url 'app:machine_edit' machine.id %}" class="btn-action">
+                                    Détails
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    Aucune machine trouvée dans l'inventaire.
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% if page_obj and page_obj.has_other_pages %}
+        <nav class="mt-4">
+            <ul class="pagination pagination-luxury justify-content-end">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.etat %}&etat={{ request.GET.etat }}{% endif %}">
+                            Précédent
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.etat %}&etat={{ request.GET.etat }}{% endif %}">
+                            {{ num }}
+                        </a>
+                    </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.etat %}&etat={{ request.GET.etat }}{% endif %}">
+                            Suivant
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

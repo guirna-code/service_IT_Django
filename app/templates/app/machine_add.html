@@ -1,0 +1,117 @@
+{% extends 'app/base.html' %}
+{% block title %}Ajouter Machine | ServiceIT{% endblock %}
+
+{% block content %}
+<style>
+    .machine-form-page {
+        color: var(--lux-text);
+    }
+
+    .form-shell {
+        max-width: 850px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--lux-border);
+        border-radius: 24px;
+        padding: 28px;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .form-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .form-subtitle {
+        color: var(--lux-muted);
+        margin-bottom: 20px;
+    }
+
+    .lux-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .lux-input,
+    .lux-select {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        color: var(--lux-text) !important;
+        border-radius: 16px !important;
+        padding: 12px !important;
+    }
+
+    .lux-input:focus,
+    .lux-select:focus {
+        border-color: rgba(142, 125, 255, 0.6) !important;
+        box-shadow: 0 0 0 0.2rem rgba(142, 125, 255, 0.14) !important;
+    }
+
+    .btn-lux-primary {
+        background: linear-gradient(135deg, #8e7dff, #a99cff);
+        color: white;
+        border: none;
+        border-radius: 999px;
+        padding: 12px 22px;
+        font-weight: 600;
+    }
+
+    .btn-lux-secondary {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--lux-border);
+        color: var(--lux-text);
+        border-radius: 999px;
+        padding: 12px 22px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+</style>
+
+<div class="machine-form-page">
+    <div class="form-shell">
+
+        <h1 class="form-title">Ajouter une machine</h1>
+        <p class="form-subtitle">Ajoutez un nouvel équipement au parc informatique.</p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label lux-label">Nom de la machine</label>
+                <input type="text" name="nom" class="form-control lux-input" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label lux-label">Type</label>
+                <select name="type" class="form-select lux-select">
+                    <option value="ordinateur">Ordinateur</option>
+                    <option value="serveur">Serveur</option>
+                    <option value="imprimante">Imprimante</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label lux-label">Statut</label>
+                <select name="statut" class="form-select lux-select">
+                    <option value="actif">Actif</option>
+                    <option value="inactif">Inactif</option>
+                    <option value="maintenance">Maintenance</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-lux-primary">Ajouter</button>
+                <a href="{% url 'app:machine_list' %}" class="btn-lux-secondary">Annuler</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

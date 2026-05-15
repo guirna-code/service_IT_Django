@@ -1,0 +1,178 @@
+{% extends 'app/base.html' %}
+{% block title %}Ajouter Utilisateur | ServiceIT{% endblock %}
+
+{% block content %}
+<style>
+    .user-form-page {
+        color: var(--lux-text);
+    }
+
+    .form-shell {
+        max-width: 860px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--lux-border);
+        border-radius: 24px;
+        padding: 28px;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .form-header {
+        margin-bottom: 24px;
+    }
+
+    .form-title {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--lux-text);
+    }
+
+    .form-subtitle {
+        margin: 8px 0 0;
+        color: var(--lux-muted);
+        font-size: 0.95rem;
+    }
+
+    .lux-label {
+        color: #e2e6fa;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .lux-input,
+    .lux-select {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        color: var(--lux-text) !important;
+        border-radius: 16px !important;
+        padding: 12px 14px !important;
+        box-shadow: none !important;
+    }
+
+    .lux-input::placeholder {
+        color: #8e93aa;
+    }
+
+    .lux-input:focus,
+    .lux-select:focus {
+        border-color: rgba(142, 125, 255, 0.65) !important;
+        box-shadow: 0 0 0 0.2rem rgba(142, 125, 255, 0.14) !important;
+    }
+
+    .lux-select option {
+        background: #17171d;
+        color: var(--lux-text);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+    }
+
+    .btn-lux-primary {
+        background: linear-gradient(135deg, #8e7dff 0%, #a99cff 100%);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 12px 22px;
+        font-weight: 600;
+        transition: all 0.25s ease;
+    }
+
+    .btn-lux-primary:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 12px 26px rgba(142, 125, 255, 0.28);
+    }
+
+    .btn-lux-secondary {
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--lux-text);
+        border: 1px solid var(--lux-border);
+        border-radius: 999px;
+        padding: 12px 22px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.25s ease;
+    }
+
+    .btn-lux-secondary:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    @media (max-width: 768px) {
+        .form-shell {
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        .form-title {
+            font-size: 1.45rem;
+        }
+
+        .form-actions > * {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="user-form-page">
+    <div class="form-shell">
+        <div class="form-header">
+            <h1 class="form-title">Ajouter un utilisateur</h1>
+            <p class="form-subtitle">
+                Créez un nouveau compte pour l’administration ou le support technique.
+            </p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="username" class="form-label lux-label">Nom d'utilisateur</label>
+                <input
+                    type="text"
+                    class="form-control lux-input"
+                    id="username"
+                    name="username"
+                    placeholder="Entrez le nom d'utilisateur"
+                    required
+                />
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label lux-label">Email</label>
+                <input
+                    type="email"
+                    class="form-control lux-input"
+                    id="email"
+                    name="email"
+                    placeholder="Entrez l'adresse email"
+                    required
+                />
+            </div>
+
+            <div class="mb-4">
+                <label for="role" class="form-label lux-label">Rôle</label>
+                <select class="form-select lux-select" id="role" name="role" required>
+                    <option value="admin">Administrateur</option>
+                    <option value="technicien">Technicien</option>
+                    <option value="utilisateur">Utilisateur</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-lux-primary">Ajouter</button>
+                <a href="{% url 'app:user_list' %}" class="btn-lux-secondary">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

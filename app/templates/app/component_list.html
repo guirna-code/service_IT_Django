@@ -1,0 +1,164 @@
+{% extends 'app/base.html' %}
+{% block title %}Composants | ServiceIT{% endblock %}
+
+{% block content %}
+<style>
+    .components-page {
+        color: var(--lux-text);
+    }
+
+    .components-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .components-title {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--lux-text);
+    }
+
+    .components-subtitle {
+        margin: 6px 0 0;
+        color: var(--lux-muted);
+        font-size: 0.95rem;
+    }
+
+    .components-table-shell {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--lux-border);
+        border-radius: 22px;
+        overflow: hidden;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .table-components {
+        margin-bottom: 0;
+        color: var(--lux-text);
+        --bs-table-bg: transparent;
+        --bs-table-color: var(--lux-text);
+        --bs-table-border-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .table-components thead th {
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--lux-muted);
+        text-transform: uppercase;
+        letter-spacing: 1.4px;
+        font-size: 0.74rem;
+        font-weight: 600;
+        padding: 18px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .table-components tbody td {
+        padding: 18px 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .table-components tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-components tbody tr:hover {
+        background: rgba(255, 255, 255, 0.025);
+    }
+
+    .component-name {
+        font-weight: 600;
+        color: var(--lux-text);
+    }
+
+    .component-type {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(142, 125, 255, 0.10);
+        color: #ddd8ff;
+        border: 1px solid rgba(142, 125, 255, 0.18);
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .capacity-text {
+        color: #d9dced;
+        font-weight: 500;
+    }
+
+    .machine-text {
+        color: var(--lux-muted);
+    }
+
+    .empty-state {
+        padding: 48px 16px;
+        text-align: center;
+        color: var(--lux-muted);
+    }
+
+    @media (max-width: 768px) {
+        .components-title {
+            font-size: 1.45rem;
+        }
+    }
+</style>
+
+<div class="components-page">
+    <div class="components-header">
+        <div>
+            <h1 class="components-title">Liste des Composants</h1>
+            <p class="components-subtitle">
+                Inventaire des composants liés aux machines du parc informatique.
+            </p>
+        </div>
+    </div>
+
+    <div class="components-table-shell">
+        <div class="table-responsive">
+<table class="table table-lux">                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Type</th>
+                        <th>Capacité</th>
+                        <th>Machine</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for component in components %}
+                    <tr>
+                        <td>
+                            <span class="component-name">{{ component.nom }}</span>
+                        </td>
+                        <td>
+                            <span class="component-type">{{ component.type }}</span>
+                        </td>
+                        <td>
+                            <span class="capacity-text">{{ component.capacite }}</span>
+                        </td>
+                        <td>
+                            <span class="machine-text">{{ component.machine }}</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                Aucun composant trouvé.
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

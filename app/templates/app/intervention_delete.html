@@ -1,0 +1,183 @@
+{% extends 'app/base.html' %}
+{% block title %}Supprimer Intervention | ServiceIT{% endblock %}
+
+{% block content %}
+<style>
+    .delete-page {
+        color: var(--lux-text);
+    }
+
+    .delete-shell {
+        max-width: 720px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 107, 107, 0.18);
+        border-radius: 24px;
+        padding: 32px;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+    }
+
+    .danger-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 107, 107, 0.12);
+        color: #ff6b6b;
+        font-size: 1.6rem;
+        margin-bottom: 18px;
+        border: 1px solid rgba(255, 107, 107, 0.18);
+    }
+
+    .delete-title {
+        margin: 0;
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: var(--lux-text);
+    }
+
+    .delete-subtitle {
+        margin: 10px 0 0;
+        color: var(--lux-muted);
+        font-size: 0.96rem;
+        line-height: 1.7;
+    }
+
+    .delete-box {
+        margin-top: 22px;
+        padding: 18px 20px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.035);
+        border: 1px solid var(--lux-border);
+    }
+
+    .delete-label {
+        color: var(--lux-muted);
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+    }
+
+    .delete-value {
+        color: var(--lux-text);
+        font-weight: 600;
+    }
+
+    .delete-warning {
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: rgba(255, 181, 71, 0.10);
+        color: #ffd89b;
+        border: 1px solid rgba(255, 181, 71, 0.16);
+        font-size: 0.92rem;
+    }
+
+    .delete-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 24px;
+    }
+
+    .btn-delete-confirm {
+        background: linear-gradient(135deg, #ff5d5d 0%, #ff7b7b 100%);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 12px 22px;
+        font-weight: 600;
+        transition: all 0.25s ease;
+    }
+
+    .btn-delete-confirm:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 12px 28px rgba(255, 107, 107, 0.24);
+    }
+
+    .btn-delete-cancel {
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--lux-text);
+        border: 1px solid var(--lux-border);
+        border-radius: 999px;
+        padding: 12px 22px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.25s ease;
+    }
+
+    .btn-delete-cancel:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    @media (max-width: 768px) {
+        .delete-shell {
+            padding: 22px;
+            border-radius: 20px;
+        }
+
+        .delete-title {
+            font-size: 1.4rem;
+        }
+
+        .delete-actions > * {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="delete-page">
+    <div class="delete-shell">
+        <div class="danger-icon">
+            <i class="bi bi-trash3"></i>
+        </div>
+
+        <h1 class="delete-title">Supprimer une intervention</h1>
+        <p class="delete-subtitle">
+            Êtes-vous sûr de vouloir supprimer cette intervention ?
+            Cette action est définitive et ne pourra pas être annulée.
+        </p>
+
+        {% if intervention %}
+        <div class="delete-box">
+            <div class="delete-label">Intervention concernée</div>
+            <div class="delete-value">
+                {{ intervention.machine.nom|default:"Intervention" }}
+            </div>
+
+            {% if intervention.date_cloture %}
+            <div class="mt-2" style="color: var(--lux-muted); font-size: 0.9rem;">
+                Date : {{ intervention.date_cloture|date:"d/m/Y" }}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="delete-warning">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Cette suppression peut affecter l’historique de maintenance et le suivi technique.
+        </div>
+
+        <form method="post" class="mt-2">
+            {% csrf_token %}
+            <div class="delete-actions">
+                <button type="submit" class="btn btn-delete-confirm">
+                    Supprimer
+                </button>
+
+                <a href="{% url 'app:intervention_list' %}" class="btn-delete-cancel">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
