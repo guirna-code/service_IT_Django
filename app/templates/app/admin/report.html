@@ -1,0 +1,64 @@
+{% extends 'app/base.html' %}
+{% block title %}Rapport inventaire | ServiceIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Rapport d'inventaire</h1>
+    <p class="page-subtitle">Etat global des machines du parc informatique.</p>
+  </div>
+  <a href="{% url 'app:export_inventory_pdf' %}" class="btn btn-primary">
+    <i class="bi bi-filetype-pdf me-1"></i> Export PDF
+  </a>
+</div>
+
+<section class="metric-grid">
+  <div class="metric-card">
+    <div class="metric-label">Total</div>
+    <div class="metric-value">{{ stats.total }}</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Fonctionnel</div>
+    <div class="metric-value">{{ stats.fonctionnel }}</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">En reparation</div>
+    <div class="metric-value">{{ stats.maintenance }}</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">En panne</div>
+    <div class="metric-value">{{ stats.panne }}</div>
+  </div>
+</section>
+
+<div class="table-card">
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Serie</th>
+          <th>Type</th>
+          <th>Pole</th>
+          <th>Etat</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for machine in machines %}
+          <tr>
+            <td class="fw-bold">{{ machine.nom }}</td>
+            <td>{{ machine.numero_serie|default:"-" }}</td>
+            <td>{{ machine.get_type_display|default:"-" }}</td>
+            <td>{{ machine.get_pole_display|default:"-" }}</td>
+            <td>{{ machine.get_etat_display }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5" class="empty-state">Aucune machine dans l'inventaire.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

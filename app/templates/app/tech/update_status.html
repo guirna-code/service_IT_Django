@@ -1,0 +1,27 @@
+{% extends 'app/base.html' %}
+{% block title %}Modifier l'etat | ServiceIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Modifier l'etat</h1>
+    <p class="page-subtitle">{{ machine.nom }}</p>
+  </div>
+</div>
+
+<form method="post" class="form-card">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="etat" class="form-label">Etat</label>
+    <select id="etat" name="etat" class="form-select" required>
+      {% for value,label in machine_etat_choices %}
+        <option value="{{ value }}" {% if machine.etat == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="action-row">
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a href="{% url 'app:machine_list_tech' %}" class="btn btn-outline-soft">Annuler</a>
+  </div>
+</form>
+{% endblock %}

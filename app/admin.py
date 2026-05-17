@@ -40,8 +40,8 @@ class MachineAdmin(admin.ModelAdmin):
 # ---------------- COMPOSANT ----------------
 @admin.register(Composant)
 class ComposantAdmin(admin.ModelAdmin):
-    list_display = ("id", "nom", "type", "machine")
-    list_filter = ("type",)
+    list_display = ("id", "nom", "type", "etat", "machine")
+    list_filter = ("type", "etat")
     search_fields = ("nom", "type", "machine__nom")
 
 

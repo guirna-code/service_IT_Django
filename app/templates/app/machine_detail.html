@@ -1,0 +1,122 @@
+{% extends 'app/base.html' %}
+{% block title %}{{ machine.nom }} | ServiceIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ machine.nom }}</h1>
+    <p class="page-subtitle">{{ machine.numero_serie|default:"Sans numero de serie" }}</p>
+  </div>
+  <div class="action-row">
+    {% if user.role == 'admin' %}
+      <a href="{% url 'app:edit_machine' machine.id %}" class="btn btn-primary">
+        <i class="bi bi-pencil me-1"></i> Modifier
+      </a>
+      <a href="{% url 'app:machine_list_admin' %}" class="btn btn-outline-soft">Retour</a>
+    {% elif user.role == 'technician' %}
+      <a href="{% url 'app:update_machine_status' machine.id %}" class="btn btn-primary">
+        <i class="bi bi-arrow-repeat me-1"></i> Etat
+      </a>
+      <a href="{% url 'app:machine_list_tech' %}" class="btn btn-outline-soft">Retour</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-lg-8">
+    <div class="detail-card h-100">
+      <h2 class="h5 text-white mb-3">Informations</h2>
+      <div class="row g-3">
+        <div class="col-md-6"><span class="text-muted d-block">Type</span><strong>{{ machine.get_type_display|default:"-" }}</strong></div>
+        <div class="col-md-6"><span class="text-muted d-block">Pole</span><strong>{{ machine.get_pole_display|default:"-" }}</strong></div>
+        <div class="col-md-6"><span class="text-muted d-block">Date d'acquisition</span><strong>{{ machine.date_acquisition|date:"d/m/Y"|default:"-" }}</strong></div>
+        <div class="col-md-6">
+          <span class="text-muted d-block">Etat</span>
+          <span class="status-badge {% if machine.etat == 'FONCTIONNEL' %}status-ok{% elif machine.etat == 'REPARATION' %}status-warn{% else %}status-danger{% endif %}">
+            {{ machine.get_etat_display }}
+          </span>
+        </div>
+        <div class="col-md-6"><span class="text-muted d-block">Enregistre par</span><strong>{{ machine.enregistre_par.email|default:"-" }}</strong></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="detail-card h-100 text-center">
+      <h2 class="h5 text-white mb-3">QR Code</h2>
+      {% if machine.qr_code %}
+        <img src="{{ machine.qr_code.url }}" alt="QR code {{ machine.nom }}" class="qr-preview">
+      {% else %}
+        <div class="empty-state">QR code non genere.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="table-card">
+      <div class="p-3 border-bottom border-secondary">
+        <h2 class="h5 mb-0 text-white">Composants</h2>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Type</th>
+              <th>Etat</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for component in composants %}
+              <tr>
+                <td>{{ component.nom }}</td>
+                <td>{{ component.type|default:"-" }}</td>
+                <td>{{ component.get_etat_display }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="3" class="empty-state">Aucun composant.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="table-card">
+      <div class="p-3 border-bottom border-secondary">
+        <h2 class="h5 mb-0 text-white">Interventions</h2>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Technicien</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for intervention in interventions %}
+              <tr>
+                <td>{{ intervention.date|date:"d/m/Y"|default:"-" }}</td>
+                <td>{{ intervention.get_type_display|default:"-" }}</td>
+                <td>{{ intervention.technicien_email }}</td>
+                <td>{{ intervention.get_statut_display }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="4" class="empty-state">Aucune intervention.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

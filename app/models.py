@@ -1,9 +1,10 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.utils.translation import gettext_lazy as _
 from io import BytesIO
-from django.core.files import File
+
 import qrcode
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.core.files import File
+from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 POLE_CHOICES = [
@@ -49,11 +50,7 @@ class Utilisateur(AbstractUser):
 
     username = None
     email = models.EmailField(unique=True)
-    role = models.CharField(
-        max_length=20,
-        choices=ROLE_CHOICES,
-        default="client"
-    )
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="client")
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
@@ -73,17 +70,17 @@ class Machine(models.Model):
     class EtatMachine(models.TextChoices):
         FONCTIONNEL = "FONCTIONNEL", _("Fonctionnel")
         EN_PANNE = "EN_PANNE", _("En panne")
-        REPARATION = "REPARATION", _("Réparation")
+        REPARATION = "REPARATION", _("Reparation")
 
     nom = models.CharField(max_length=100, verbose_name="Nom")
     numero_serie = models.CharField(max_length=100, unique=True, null=True, blank=True)
     type = models.CharField(max_length=20, choices=TypeMachine.choices, null=True, blank=True)
-    pole = models.CharField(max_length=50, choices=POLE_CHOICES, default="INF", verbose_name="Pôle")
+    pole = models.CharField(max_length=50, choices=POLE_CHOICES, default="INF", verbose_name="Pole")
     date_acquisition = models.DateField(null=True, blank=True)
     etat = models.CharField(
         max_length=20,
         choices=EtatMachine.choices,
-        default=EtatMachine.FONCTIONNEL
+        default=EtatMachine.FONCTIONNEL,
     )
     qr_code = models.ImageField(upload_to="qrcodes/", null=True, blank=True)
 
@@ -91,7 +88,7 @@ class Machine(models.Model):
         Utilisateur,
         on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        blank=True,
     )
 
     class Meta:
@@ -115,30 +112,22 @@ class Machine(models.Model):
 
 
 class Composant(models.Model):
-
     class EtatComposant(models.TextChoices):
         OK = "OK", "OK"
         FAIBLE = "FAIBLE", "Faible"
         HS = "HS", "Hors service"
 
     nom = models.CharField(max_length=100)
-
-    type = models.CharField(
-        max_length=50,
-        null=True,
-        blank=True
-    )
-
+    type = models.CharField(max_length=50, null=True, blank=True)
     etat = models.CharField(
         max_length=20,
         choices=EtatComposant.choices,
-        default=EtatComposant.OK
+        default=EtatComposant.OK,
     )
-
     machine = models.ForeignKey(
         Machine,
         on_delete=models.CASCADE,
-        related_name="composants"
+        related_name="composants",
     )
 
     def __str__(self):
@@ -148,43 +137,41 @@ class Composant(models.Model):
 class RapportIntervention(models.Model):
     class TypeIntervention(models.TextChoices):
         MAINTENANCE = "maintenance", _("Maintenance")
-        REPARATION = "reparation", _("Réparation")
+        REPARATION = "reparation", _("Reparation")
         INSTALLATION = "installation", _("Installation")
 
     class StatutIntervention(models.TextChoices):
         EN_COURS = "en_cours", _("En cours")
-        TERMINE = "terminee", _("Terminée")
-        ANNULEE = "annulee", _("Annulée")
-        ECHOUE = "echec", _("Échec")
+        TERMINE = "terminee", _("Terminee")
+        ANNULEE = "annulee", _("Annulee")
+        ECHOUE = "echec", _("Echec")
 
     date = models.DateField(null=True, blank=True)
     type = models.CharField(max_length=50, choices=TypeIntervention.choices, null=True, blank=True)
     statut = models.CharField(
         max_length=50,
         choices=StatutIntervention.choices,
-        default=StatutIntervention.EN_COURS
+        default=StatutIntervention.EN_COURS,
     )
     description = models.TextField(null=True, blank=True)
-    duree = models.PositiveIntegerField(verbose_name="Durée (min)", null=True, blank=True)
+    duree = models.PositiveIntegerField(verbose_name="Duree (min)", null=True, blank=True)
 
     redacteur = models.ForeignKey(
         Utilisateur,
         on_delete=models.CASCADE,
-        related_name="rapports"
+        related_name="rapports",
     )
-
     technicien = models.ForeignKey(
         Utilisateur,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="interventions_assignees"
+        related_name="interventions_assignees",
     )
-
     machine_concernee = models.ForeignKey(
         Machine,
         on_delete=models.CASCADE,
-        related_name="interventions"
+        related_name="interventions",
     )
 
     class Meta:
