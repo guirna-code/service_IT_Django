@@ -1,19 +1,23 @@
-import psycopg2
+import os
 import sys
-import traceback
+from pathlib import Path
 
-params = dict(dbname='db_service_IT', user='postgres', password='yahya', host='localhost', port='7777')
-for k, v in params.items():
-    print(k, type(v), repr(v))
-    try:
-        print('utf8:', v.encode('utf-8'))
-    except Exception as e:
-        print('encode error', e)
+import django
+from django.conf import settings
+from django.db import connection
 
-try:
-    conn = psycopg2.connect(dbname=params['dbname'], user=params['user'], password=params['password'], host=params['host'], port=params['port'])
-    print('connected')
-    conn.close()
-except Exception as e:
-    print('EXC:', type(e), e)
-    traceback.print_exc()
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gestion_it.settings")
+
+django.setup()
+
+db = settings.DATABASES["default"]
+print("database:", db["NAME"])
+print("user:", db["USER"])
+print("host:", db["HOST"])
+print("port:", db["PORT"])
+
+connection.ensure_connection()
+print("connected")

@@ -1,9 +1,10 @@
 from io import BytesIO
-
 import qrcode
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.files import File
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -93,14 +94,21 @@ class Machine(models.Model):
 
     class Meta:
         ordering = ["nom"]
+        indexes = [
+            models.Index(fields=["etat"], name="app_machine_etat_5ed9c9_idx"),
+            models.Index(fields=["type"], name="app_machine_type_f7331f_idx"),
+            models.Index(fields=["pole"], name="app_machine_pole_8c2b40_idx"),
+        ]
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
         if not self.qr_code:
-            qr = qrcode.make(f"http://127.0.0.1:8000/machines/{self.id}/")
+            detail_url = reverse("app:machine_pdf", args=[self.id])
+            qr = qrcode.make(f"{settings.SITE_URL}{detail_url}")
             buffer = BytesIO()
             qr.save(buffer, format="PNG")
+            buffer.seek(0)
 
             file_name = f"machine_{self.id}.png"
             self.qr_code.save(file_name, File(buffer), save=False)
@@ -119,6 +127,9 @@ class Composant(models.Model):
 
     nom = models.CharField(max_length=100)
     type = models.CharField(max_length=50, null=True, blank=True)
+    marque = models.CharField(max_length=100, null=True, blank=True)
+    numero_serie = models.CharField(max_length=100, null=True, blank=True)
+    date_installation = models.DateField(null=True, blank=True)
     etat = models.CharField(
         max_length=20,
         choices=EtatComposant.choices,
@@ -147,6 +158,7 @@ class RapportIntervention(models.Model):
         ECHOUE = "echec", _("Echec")
 
     date = models.DateField(null=True, blank=True)
+    date_cloture = models.DateTimeField(null=True, blank=True)
     type = models.CharField(max_length=50, choices=TypeIntervention.choices, null=True, blank=True)
     statut = models.CharField(
         max_length=50,
@@ -176,6 +188,10 @@ class RapportIntervention(models.Model):
 
     class Meta:
         ordering = ["-id"]
+        indexes = [
+            models.Index(fields=["statut"], name="app_rapport_statut_ba4064_idx"),
+            models.Index(fields=["date"], name="app_rapport_date_4ee5a3_idx"),
+        ]
 
     def __str__(self):
         return f"Intervention #{self.id} - {self.get_type_display() if self.type else 'N/A'}"

@@ -11,33 +11,46 @@
 
 <form method="post" class="form-card">
   {% csrf_token %}
+
+  {% if form.errors %}
+    <div class="alert alert-danger">Veuillez corriger les champs invalides.</div>
+  {% endif %}
+
   <div class="form-grid">
     <div>
-      <label for="nom" class="form-label">Nom</label>
-      <input type="text" id="nom" name="nom" class="form-control" value="{{ component.nom|default:'' }}" required>
+      <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+      {{ form.nom }}
+      {{ form.nom.errors }}
     </div>
     <div>
-      <label for="type" class="form-label">Type</label>
-      <input type="text" id="type" name="type" class="form-control" value="{{ component.type|default:'' }}" placeholder="RAM, SSD, CPU">
+      <label for="{{ form.type.id_for_label }}" class="form-label">Type</label>
+      {{ form.type }}
+      {{ form.type.errors }}
     </div>
     <div>
-      <label for="etat" class="form-label">Etat</label>
-      <select id="etat" name="etat" class="form-select" required>
-        {% for value,label in etat_choices %}
-          <option value="{{ value }}" {% if component.etat == value %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-      </select>
+      <label for="{{ form.marque.id_for_label }}" class="form-label">Marque</label>
+      {{ form.marque }}
+      {{ form.marque.errors }}
     </div>
     <div>
-      <label for="machine" class="form-label">Machine</label>
-      <select id="machine" name="machine" class="form-select" required>
-        <option value="">Selectionner une machine</option>
-        {% for machine in machines %}
-          <option value="{{ machine.id }}" {% if component.machine.id == machine.id %}selected{% endif %}>
-            {{ machine.nom }} - {{ machine.numero_serie|default:"Sans serie" }}
-          </option>
-        {% endfor %}
-      </select>
+      <label for="{{ form.numero_serie.id_for_label }}" class="form-label">Numero de serie</label>
+      {{ form.numero_serie }}
+      {{ form.numero_serie.errors }}
+    </div>
+    <div>
+      <label for="{{ form.date_installation.id_for_label }}" class="form-label">Date d'installation</label>
+      {{ form.date_installation }}
+      {{ form.date_installation.errors }}
+    </div>
+    <div>
+      <label for="{{ form.etat.id_for_label }}" class="form-label">Etat</label>
+      {{ form.etat }}
+      {{ form.etat.errors }}
+    </div>
+    <div class="form-span-2">
+      <label for="{{ form.machine.id_for_label }}" class="form-label">Machine</label>
+      {{ form.machine }}
+      {{ form.machine.errors }}
     </div>
   </div>
 

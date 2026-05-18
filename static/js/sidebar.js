@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
-  sidebarCanvas.querySelectorAll('.nav-link').forEach(function (link) {
+  sidebarCanvas.querySelectorAll('.sidebar-link').forEach(function (link) {
     link.addEventListener('click', function () {
       var offcanvas = bootstrap.Offcanvas.getInstance(sidebarCanvas);
       if (offcanvas) {

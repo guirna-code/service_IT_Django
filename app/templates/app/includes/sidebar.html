@@ -67,10 +67,13 @@
   </nav>
 
   <div class="sidebar-footer">
-    <a class="sidebar-link logout-btn" href="{% url 'app:logout' %}">
-      <i class="bi bi-box-arrow-right"></i>
-      <span>Deconnexion</span>
-    </a>
+    <form method="post" action="{% url 'app:logout' %}" class="logout-form">
+      {% csrf_token %}
+      <button type="submit" class="sidebar-link logout-btn">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Deconnexion</span>
+      </button>
+    </form>
   </div>
 </aside>
 
@@ -129,10 +132,13 @@
     </nav>
 
     <div class="sidebar-footer">
-      <a class="sidebar-link logout-btn" href="{% url 'app:logout' %}">
-        <i class="bi bi-box-arrow-right"></i>
-        <span>Deconnexion</span>
-      </a>
+      <form method="post" action="{% url 'app:logout' %}" class="logout-form">
+        {% csrf_token %}
+        <button type="submit" class="sidebar-link logout-btn">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Deconnexion</span>
+        </button>
+      </form>
     </div>
   </div>
 </div>

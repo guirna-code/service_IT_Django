@@ -40,16 +40,16 @@ class MachineAdmin(admin.ModelAdmin):
 # ---------------- COMPOSANT ----------------
 @admin.register(Composant)
 class ComposantAdmin(admin.ModelAdmin):
-    list_display = ("id", "nom", "type", "etat", "machine")
+    list_display = ("id", "nom", "type", "marque", "numero_serie", "etat", "machine")
     list_filter = ("type", "etat")
-    search_fields = ("nom", "type", "machine__nom")
+    search_fields = ("nom", "type", "marque", "numero_serie", "machine__nom")
 
 
 # ---------------- RAPPORT INTERVENTION ----------------
 @admin.register(RapportIntervention)
 class RapportInterventionAdmin(admin.ModelAdmin):
-    list_display = ("id", "machine_concernee", "redacteur", "technicien", "type", "statut", "date", "duree")
-    list_filter = ("type", "statut", "date")
+    list_display = ("id", "machine_concernee", "redacteur", "technicien", "type", "statut", "date", "date_cloture", "duree")
+    list_filter = ("type", "statut", "date", "date_cloture")
     search_fields = (
         "machine_concernee__nom",
         "machine_concernee__numero_serie",

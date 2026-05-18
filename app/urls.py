@@ -32,11 +32,8 @@ urlpatterns = [
 
     # Technician
     path("dashboard/tech/machines/", views.machine_list_tech, name="machine_list_tech"),
-    path(
-        "dashboard/tech/machines/<int:machine_id>/update/",
-        views.update_machine_status,
-        name="update_machine_status",
-    ),
+    path("dashboard/tech/machines/<int:machine_id>/update/", views.update_machine_status, name="update_machine_status",),
     path("dashboard/tech/interventions/", views.intervention_list, name="intervention_list"),
     path("dashboard/tech/interventions/add/", views.add_intervention, name="add_intervention"),
+    path("machines/<int:machine_id>/pdf/", views.machine_pdf, name="machine_pdf"),
 ]

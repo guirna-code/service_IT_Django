@@ -64,6 +64,8 @@
             <tr>
               <th>Nom</th>
               <th>Type</th>
+              <th>Marque</th>
+              <th>Serie</th>
               <th>Etat</th>
             </tr>
           </thead>
@@ -72,11 +74,13 @@
               <tr>
                 <td>{{ component.nom }}</td>
                 <td>{{ component.type|default:"-" }}</td>
+                <td>{{ component.marque|default:"-" }}</td>
+                <td>{{ component.numero_serie|default:"-" }}</td>
                 <td>{{ component.get_etat_display }}</td>
               </tr>
             {% empty %}
               <tr>
-                <td colspan="3" class="empty-state">Aucun composant.</td>
+                <td colspan="5" class="empty-state">Aucun composant.</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -98,6 +102,7 @@
               <th>Type</th>
               <th>Technicien</th>
               <th>Statut</th>
+              <th>DESCRIPTION</th>
             </tr>
           </thead>
           <tbody>
@@ -107,6 +112,7 @@
                 <td>{{ intervention.get_type_display|default:"-" }}</td>
                 <td>{{ intervention.technicien_email }}</td>
                 <td>{{ intervention.get_statut_display }}</td>
+                <td class="description-cell"> {{ intervention.description }}</td>
               </tr>
             {% empty %}
               <tr>

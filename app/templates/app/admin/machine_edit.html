@@ -11,43 +11,41 @@
 
 <form method="post" class="form-card">
   {% csrf_token %}
+
+  {% if form.errors %}
+    <div class="alert alert-danger">Veuillez corriger les champs invalides.</div>
+  {% endif %}
+
   <div class="form-grid">
     <div>
-      <label for="nom" class="form-label">Nom</label>
-      <input type="text" id="nom" name="nom" class="form-control" value="{{ machine.nom }}" required>
+      <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+      {{ form.nom }}
+      {{ form.nom.errors }}
     </div>
     <div>
-      <label for="numero_serie" class="form-label">Numero de serie</label>
-      <input type="text" id="numero_serie" name="numero_serie" class="form-control" value="{{ machine.numero_serie|default:'' }}">
+      <label for="{{ form.numero_serie.id_for_label }}" class="form-label">Numero de serie</label>
+      {{ form.numero_serie }}
+      {{ form.numero_serie.errors }}
     </div>
     <div>
-      <label for="type" class="form-label">Type</label>
-      <select id="type" name="type" class="form-select">
-        <option value="">Selectionner</option>
-        {% for value,label in machine_type_choices %}
-          <option value="{{ value }}" {% if machine.type == value %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-      </select>
+      <label for="{{ form.type.id_for_label }}" class="form-label">Type</label>
+      {{ form.type }}
+      {{ form.type.errors }}
     </div>
     <div>
-      <label for="pole" class="form-label">Pole</label>
-      <select id="pole" name="pole" class="form-select">
-        {% for value,label in pole_choices %}
-          <option value="{{ value }}" {% if machine.pole == value %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-      </select>
+      <label for="{{ form.pole.id_for_label }}" class="form-label">Pole</label>
+      {{ form.pole }}
+      {{ form.pole.errors }}
     </div>
     <div>
-      <label for="date_acquisition" class="form-label">Date d'acquisition</label>
-      <input type="date" id="date_acquisition" name="date_acquisition" class="form-control" value="{{ machine.date_acquisition|date:'Y-m-d' }}">
+      <label for="{{ form.date_acquisition.id_for_label }}" class="form-label">Date d'acquisition</label>
+      {{ form.date_acquisition }}
+      {{ form.date_acquisition.errors }}
     </div>
     <div>
-      <label for="etat" class="form-label">Etat</label>
-      <select id="etat" name="etat" class="form-select">
-        {% for value,label in machine_etat_choices %}
-          <option value="{{ value }}" {% if machine.etat == value %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-      </select>
+      <label for="{{ form.etat.id_for_label }}" class="form-label">Etat</label>
+      {{ form.etat }}
+      {{ form.etat.errors }}
     </div>
   </div>
 
